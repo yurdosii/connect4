@@ -1,0 +1,64 @@
+[tool.poetry]
+name = "connect4"
+version = "0.1.0"
+description = ""
+authors = ["Yurii Kosiv <yurdosii.ksv@gmail.com>"]
+license = "MIT License"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.103.2"
+uvicorn = {extras = ["standard"], version = "^0.23.2"}
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.9.1"
+flake8 = "^6.1.0"
+isort = "^5.12.0"
+mypy = "^1.6.0"
+pre-commit = "^3.5.0"
+pytest = "^7.4.2"
+flake8-pyproject = "^1.2.3"
+codespell = "^2.2.6"
+
+[tool.black]
+line-length = 79
+target-version = ['py312']
+exclude = '''
+  /(
+    \.git
+    | __pycache__
+  )/
+'''
+
+[tool.flake8]
+max-line-length = 79
+exclude = [".git", "__pycache__"]
+
+[tool.isort]
+profile = "black"
+src_paths = ["./src"]
+force_alphabetical_sort_within_sections = true
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+mypy_path = "./src/"
+allow_untyped_globals = true
+check_untyped_defs = true
+disallow_any_decorated = true
+disallow_any_generics = true
+disallow_untyped_calls = true
+disallow_untyped_decorators = true
+disallow_untyped_defs = true
+ignore_missing_imports = false
+show_error_codes = true
+warn_return_any = true
+warn_unused_configs = true
+plugins = [
+  "pydantic.mypy"
+]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
