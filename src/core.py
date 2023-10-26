@@ -1,11 +1,7 @@
 from collections.abc import Callable
 from dataclasses import dataclass
 
-N = 6
-M = 7
-TARGET = 4
-PLAYER1 = 1
-PLAYER2 = 2
+from src.constants import M, N, TARGET
 
 
 @dataclass
@@ -44,7 +40,7 @@ DIRECTIONS = [
 ]
 
 
-def init_game() -> list[list[int]]:
+def init_board() -> list[list[int]]:
     return [[0 for _ in range(M)] for _ in range(N)]
 
 
