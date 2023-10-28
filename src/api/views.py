@@ -17,6 +17,7 @@ async def start_new_game(players: GameBase) -> Game:
     return cast(
         Game,
         await client.get(
-            Game, inserted_result.inserted_id  # type: ignore[arg-type]
+            Game,  # type: ignore[arg-type]
+            inserted_result.inserted_id,
         ),
     )

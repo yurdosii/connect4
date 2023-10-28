@@ -1,10 +1,16 @@
-from environs import Env
-
-env = Env()
-env.read_env()
+from pydantic_settings import BaseSettings
 
 
-# MongoDB
-MONGO_DB_HOST = env.str("MONGO_DB_HOST", "localhost")
-MONGO_DB_PORT = env.int("MONGO_DB_PORT", 27017)
-MONGO_DB_DB = env.str("MONGO_DB_DB", "db_connect4")
+class AppSettings(BaseSettings):
+    class Config:
+        env_file = ".env"
+        env_file_encoding = "utf-8"
+        env_prefix = "app_"
+
+    # MongoDB
+    MONGO_DB_HOST: str
+    MONGO_DB_PORT: int
+    MONGO_DB_DB: str
+
+
+settings = AppSettings()

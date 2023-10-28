@@ -1,7 +1,8 @@
 import datetime
 
 from pydantic import BaseModel, Field
-from pydantic_mongo import ObjectIdField
+
+from src.api.fields import PyObjectId
 
 
 class CreatedUpdatedMixin(BaseModel):
@@ -13,7 +14,7 @@ class MongoDBModel(BaseModel):
     class Meta:
         collection_name: str
 
-    id: ObjectIdField
+    id: PyObjectId
 
     @classmethod
     def get_collection_name(cls) -> str:
@@ -24,14 +25,14 @@ class GameBase(BaseModel):
     player1: str = Field(
         min_length=3,
         max_length=50,
-        pattern=r"^[a-zA-Z0-9]+$",
-        examples=["name"],
+        pattern=r"^[a-zA-Z0-9_]+$",
+        examples=["name1"],
     )
     player2: str = Field(
         min_length=3,
         max_length=50,
-        pattern=r"^[a-zA-Z0-9]+$",
-        examples=["name"],
+        pattern=r"^[a-zA-Z0-9_]+$",
+        examples=["name2"],
     )
 
 
