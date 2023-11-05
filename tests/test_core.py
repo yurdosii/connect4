@@ -167,6 +167,17 @@ def test_is_valid_move(row, col, expected):
             ],
             None,
         ),
+        (
+            [
+                [1, 0, 0, 0, 0, 0, 0],
+                [2, 0, 0, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0, 0, 0],
+                [2, 2, 0, 0, 0, 0, 0],
+                [1, 2, 0, 0, 1, 0, 0],
+                [1, 2, 0, 0, 1, 0, 2],
+            ],
+            None,
+        ),
     ),
 )
 def test_detect_winner(board, expected):
