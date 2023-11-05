@@ -1,7 +1,7 @@
 from collections.abc import Callable
 from dataclasses import dataclass
 
-from src.constants import M, N, TARGET
+from src.constants import TARGET, M, N
 
 
 @dataclass
@@ -14,7 +14,7 @@ class Direction:
 DIRECTIONS = [
     Direction(
         name="down",
-        condition=lambda row, _: row <= 3,
+        condition=lambda row, _: row < 3,
         function=lambda board, row, col, i: board[row + i][col],
     ),
     Direction(
@@ -44,12 +44,22 @@ def init_board() -> list[list[int]]:
     return [[0 for _ in range(M)] for _ in range(N)]
 
 
-def is_valid_move(row: int, col: int, board: list[list[int]]) -> bool:
+def is_valid_move(
+    row: int | None, col: int | None, board: list[list[int]]
+) -> bool:
+    if row is None or col is None:
+        return False
     if row < 0 or row >= N or col < 0 or col >= M:
         return False
     if board[row][col] != 0:
         return False
     return row == N - 1 or board[row + 1][col] != 0
+
+
+def make_move(
+    row: int, col: int, board: list[list[int]], player_sign: int
+) -> None:
+    board[row][col] = player_sign
 
 
 def detect_winner(board: list[list[int]]) -> int | None:

@@ -1,8 +1,26 @@
+"""
+winner values: 1 / 2 / None
+there is a winner -> winner is not None and finished_at is not None
+draw -> winner is None and finished_at is not None
+"""
 import datetime
+from enum import IntEnum, StrEnum
 
 from pydantic import BaseModel, Field
 
 from src.api.fields import PyObjectId
+
+
+class PlayerEnum(IntEnum):
+    player1 = 1
+    player2 = 2
+
+
+class GameStatusEnum(StrEnum):
+    in_progress = "In progress"
+    winner_player1 = "Player 1 won"
+    winner_player2 = "Player 2 won"
+    draw = "Draw"
 
 
 class CreatedUpdatedMixin(BaseModel):
@@ -41,4 +59,28 @@ class Game(MongoDBModel, GameBase, CreatedUpdatedMixin):
         collection_name = "games"
 
     board: list[list[int]]
-    is_active: bool = True
+    move_number: int = 1
+    winner: PlayerEnum | None = None
+    finished_at: datetime.datetime | None = None
+
+    def get_next_player_to_move_username(self) -> str:
+        return self.player1 if self.move_number % 2 else self.player2
+
+    def get_next_player_to_move_sign(self) -> int:
+        next_player_username = self.get_next_player_to_move_username()
+        return (
+            PlayerEnum.player1
+            if next_player_username == self.player1
+            else PlayerEnum.player2
+        )
+
+    def get_status(self) -> GameStatusEnum:
+        if self.finished_at is None:
+            return GameStatusEnum.in_progress
+        elif self.winner:
+            return (
+                GameStatusEnum.winner_player1
+                if self.winner == PlayerEnum.player1
+                else GameStatusEnum.winner_player2
+            )
+        return GameStatusEnum.draw
