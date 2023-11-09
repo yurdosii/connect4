@@ -32,7 +32,8 @@ repos:
     hooks:
       - id: mypy
         name: Run mypy
-        entry: .venv/bin/mypy
+        entry: backend/.venv/bin/mypy
+        exclude: settings.py
         language: python
         language_version: python3.12
         types: ["python"]

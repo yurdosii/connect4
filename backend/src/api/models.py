@@ -8,7 +8,7 @@ from enum import IntEnum, StrEnum
 
 from pydantic import BaseModel, Field
 
-from src.api.fields import PyObjectId
+from .fields import PyObjectId
 
 
 class PlayerEnum(IntEnum):

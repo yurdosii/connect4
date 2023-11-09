@@ -3,8 +3,8 @@ from typing import AsyncGenerator
 
 from fastapi import FastAPI
 
-from src.api.views import router as api_router
-from src.db.utils import get_mongodb
+from .api.views import router as api_router
+from .db.utils import get_mongodb
 
 
 @asynccontextmanager
