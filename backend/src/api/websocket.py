@@ -3,7 +3,7 @@ from typing import Any
 
 from fastapi import WebSocket
 
-from src.api.models import Game
+from .models import Game
 
 
 class ConnectionManager:

@@ -1,7 +1,7 @@
 from collections.abc import Callable
 from dataclasses import dataclass
 
-from src.constants import TARGET, M, N
+from .constants import TARGET, M, N
 
 
 @dataclass

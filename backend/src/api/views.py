@@ -10,11 +10,11 @@ from fastapi import (
     status,
 )
 
-from src.api.crud import get_game_from_db, save_game, start_new_game
-from src.api.models import Game, GameBase, PlayerEnum
-from src.api.websocket import connection_manager
-from src.constants import M, N
-from src.core import detect_winner, is_valid_move, make_move
+from ..constants import M, N
+from ..core import detect_winner, is_valid_move, make_move
+from .crud import get_game_from_db, save_game, start_new_game
+from .models import Game, GameBase, PlayerEnum
+from .websocket import connection_manager
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +42,7 @@ async def get_game(game_id: str) -> Game:
     return game
 
 
-@router.websocket("/ws/games/{game_id}/")
+@router.websocket("/ws/game/{game_id}/")
 async def websocket_game_endpoint(websocket: WebSocket, game_id: str) -> None:
     await connection_manager.connect(websocket, game_id)
 

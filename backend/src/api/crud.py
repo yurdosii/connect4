@@ -1,9 +1,9 @@
 import logging
 from typing import Any
 
-from src.api.models import Game
-from src.core import init_board
-from src.db.client import MongoDBClient
+from ..core import init_board
+from ..db.client import MongoDBClient
+from .models import Game
 
 logger = logging.getLogger(__name__)
 
