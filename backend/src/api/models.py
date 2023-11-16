@@ -4,16 +4,12 @@ there is a winner -> winner is not None and finished_at is not None
 draw -> winner is None and finished_at is not None
 """
 import datetime
-from enum import IntEnum, StrEnum
+from enum import StrEnum
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, computed_field
 
+from ..constants import PlayerEnum
 from .fields import PyObjectId
-
-
-class PlayerEnum(IntEnum):
-    player1 = 1
-    player2 = 2
 
 
 class GameStatusEnum(StrEnum):
@@ -74,7 +70,8 @@ class Game(MongoDBModel, GameBase, CreatedUpdatedMixin):
             else PlayerEnum.player2
         )
 
-    def get_status(self) -> GameStatusEnum:
+    @computed_field
+    def status(self) -> GameStatusEnum:
         if self.finished_at is None:
             return GameStatusEnum.in_progress
         elif self.winner:

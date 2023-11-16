@@ -11,7 +11,7 @@ from fastapi import (
 )
 
 from ..constants import M, N
-from ..core import detect_winner, is_valid_move, make_move
+from ..core import detect_winner, is_valid_move, make_move, mark_winner
 from .crud import get_game_from_db, save_game, start_new_game
 from .models import Game, GameBase, PlayerEnum
 from .websocket import connection_manager
@@ -58,7 +58,7 @@ async def websocket_game_endpoint(websocket: WebSocket, game_id: str) -> None:
 
             if game.finished_at:
                 logger.warning(
-                    f"Game {game_id=} was finished, game status: {game.get_status()}"
+                    f"Game {game_id=} was finished, game status: {game.status}"
                 )
                 continue
 
@@ -86,6 +86,7 @@ async def websocket_game_endpoint(websocket: WebSocket, game_id: str) -> None:
             # update game
             winner = detect_winner(game.board)
             if winner:
+                mark_winner(game.board, winner)
                 game.winner = PlayerEnum(winner)
                 game.finished_at = datetime.datetime.now()
             elif game.move_number == N * M:
