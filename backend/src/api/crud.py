@@ -23,7 +23,18 @@ async def get_game_from_db(game_id: str) -> Game | None:
     return Game(**game_data)
 
 
+async def list_games_from_db() -> list[dict[str, Any]]:
+    client = MongoDBClient()
+    return await client.list(Game)  # type: ignore[arg-type]
+
+
 async def save_game(game_id: str, game_data: dict[str, Any]) -> Game | None:
     client = MongoDBClient()
     await client.update_one(Game, game_id, game_data)  # type: ignore[arg-type]
     return await get_game_from_db(game_id)
+
+
+async def delete_games_from_db() -> int:
+    client = MongoDBClient()
+    result = await client.delete_many(Game)  # type: ignore[arg-type]
+    return result.deleted_count
