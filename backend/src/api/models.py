@@ -5,10 +5,13 @@ draw -> winner is None and finished_at is not None
 """
 import datetime
 from enum import StrEnum
+from typing import Any
 
-from pydantic import BaseModel, Field, computed_field
+from pydantic import BaseModel, Field, ValidationError, computed_field
+from pydantic.types import NonNegativeInt
 
 from ..constants import PlayerEnum
+from ..core import calculate_move_row_by_col
 from .fields import PyObjectId
 
 
@@ -59,11 +62,13 @@ class Game(MongoDBModel, GameBase, CreatedUpdatedMixin):
     winner: PlayerEnum | None = None
     finished_at: datetime.datetime | None = None
 
-    def get_next_player_to_move_username(self) -> str:
+    @property
+    def next_player_to_move_username(self) -> str:
         return self.player1 if self.move_number % 2 else self.player2
 
-    def get_next_player_to_move_sign(self) -> int:
-        next_player_username = self.get_next_player_to_move_username()
+    @property
+    def next_player_to_move_sign(self) -> int:
+        next_player_username = self.next_player_to_move_username
         return (
             PlayerEnum.player1
             if next_player_username == self.player1
@@ -81,3 +86,20 @@ class Game(MongoDBModel, GameBase, CreatedUpdatedMixin):
                 else GameStatusEnum.winner_player2
             )
         return GameStatusEnum.draw
+
+    def get_move_row_by_col(self, col: int) -> int | None:
+        return calculate_move_row_by_col(self.board, col)
+
+
+class Move(BaseModel):
+    player: str
+    col: NonNegativeInt
+
+
+def get_model_safe(
+    model: type[BaseModel], model_data: dict[str, Any]
+) -> BaseModel | None:
+    try:
+        return model(**model_data)
+    except ValidationError:
+        return None

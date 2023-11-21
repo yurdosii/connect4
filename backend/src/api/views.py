@@ -1,4 +1,3 @@
-import datetime
 import logging
 from typing import cast
 
@@ -10,10 +9,10 @@ from fastapi import (
     status,
 )
 
-from ..constants import M, N
-from ..core import detect_winner, is_valid_move, make_move, mark_winner
 from .crud import get_game_from_db, save_game, start_new_game
-from .models import Game, GameBase, PlayerEnum
+from .models import Game, GameBase, Move, get_model_safe
+from .shortcuts import make_move
+from .validators import validate
 from .websocket import connection_manager
 
 logger = logging.getLogger(__name__)
@@ -48,52 +47,24 @@ async def websocket_game_endpoint(websocket: WebSocket, game_id: str) -> None:
 
     try:
         while True:
-            data = await websocket.receive_json()
+            move_data = await websocket.receive_json()
 
-            # get game from DB
+            # get game and move
             game = await get_game_from_db(game_id)
-            if game is None:
-                logger.warning(f"Game {game_id=} not found")
-                continue
+            move = get_model_safe(Move, move_data)
 
-            if game.finished_at:
-                logger.warning(
-                    f"Game {game_id=} was finished, game status: {game.status}"
-                )
-                continue
-
-            # validate move
-            player = data.get("player")
-            if (
-                player is None
-                or player != game.get_next_player_to_move_username()
-            ):
-                logger.warning(f"This is not {player}'s move.")
-                continue
-
-            row = data.get("row")
-            col = data.get("col")
-            if not is_valid_move(row, col, game.board):
-                logger.warning(f"Move {row=}{col=} is not valid")
+            # validations
+            error_msg = validate(game, move)  # type: ignore[arg-type]
+            if error_msg:
+                logger.warning(error_msg)
                 continue
 
             # make move
-            make_move(
-                row, col, game.board, game.get_next_player_to_move_sign()
-            )
-            game.move_number += 1
+            game = cast(Game, game)
+            move = cast(Move, move)
+            make_move(game, move.col)  # type: ignore[arg-type]
 
-            # update game
-            winner = detect_winner(game.board)
-            if winner:
-                mark_winner(game.board, winner)
-                game.winner = PlayerEnum(winner)
-                game.finished_at = datetime.datetime.now()
-            elif game.move_number == N * M:
-                game.winner = None
-                game.finished_at = datetime.datetime.now()
-
-            # save move
+            # update DB
             result = cast(Game, await save_game(game_id, game.model_dump()))
 
             # broadcast game to all players
