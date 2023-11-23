@@ -14,7 +14,8 @@ class ConnectionManager:
         await websocket.accept()
         self.games[game_id]["players"].append(websocket)
 
-    async def broadcast_game(self, game_id: str, game: Game) -> None:
+    async def broadcast_game(self, game: Game) -> None:
+        game_id = str(game.id)
         json_data = game.model_dump_json()
         for connection in self.games[game_id]["players"]:
             await connection.send_json(json_data)

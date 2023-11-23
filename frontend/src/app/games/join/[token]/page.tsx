@@ -1,16 +1,39 @@
 "use client";
 
-import { setPlayerNameInLocalStorage } from "@/utils/localStorageUtils";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import {
+    getPlayerNameFromLocalStorage,
+    setPlayerNameInLocalStorage,
+} from "@/utils/localStorageUtils";
+import { useEffect, useState } from "react";
 
-export default function Home() {
+import { GameData } from "@/app/games/[id]/page";
+import { PlayerNameInput } from "@/app/page";
+import { useRouter } from "next/navigation";
+
+export default function Game({ params }: { params: { token: string } }) {
     const router = useRouter();
+    const [gameData, setGameData] = useState<GameData | null>(null);
+    const [isLoading, setLoading] = useState(true);
     const [playerName, setPlayerName] = useState("");
 
-    function handleStartGame() {
+    useEffect(() => {
+        fetch(`http://127.0.0.1:8000/game/join/${params.token}/`)
+            .then((res) => res.json())
+            .then((data) => {
+                const savedPlayerName = getPlayerNameFromLocalStorage(data.id);
+                if (data.player2 || savedPlayerName) {
+                    router.push(`/games/${data.id}`);
+                }
+                setGameData(data);
+                setLoading(false);
+            });
+    }, []);
+
+    if (isLoading) return <div className="text-black">loading...</div>;
+
+    function handleJoinGame() {
         const data = { player: playerName };
-        fetch("http://127.0.0.1:8000/game/start/", {
+        fetch(`http://127.0.0.1:8000/game/join/${params.token}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data),
@@ -34,11 +57,15 @@ export default function Home() {
                     alt="Connect4"
                 />
                 <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-white">
-                    Start New Game
+                    {gameData?.player1} is challenging your skills in Connect 4 game.{" "}
+                    <br />
                 </h2>
+                <p className="mt-2 text-center">
+                    Please enter your name and click "Join" to start the battle.
+                </p>
             </div>
 
-            <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+            <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-sm">
                 <div className="space-y-6">
                     <PlayerNameInput
                         label="Your name"
@@ -48,44 +75,13 @@ export default function Home() {
 
                     <div>
                         <button
-                            onClick={handleStartGame}
+                            onClick={handleJoinGame}
                             className="w-full justify-center rounded-md bg-fuchsia-500 bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-fuchsia-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fuchsia-500"
                         >
-                            Start Game
+                            Join Game
                         </button>
                     </div>
                 </div>
-            </div>
-        </div>
-    );
-}
-
-interface PlayerNameInputProps {
-    label: string;
-    value: string;
-    setValue: (value: string) => void;
-}
-
-export function PlayerNameInput({label, value, setValue}: PlayerNameInputProps) {
-    return (
-        <div>
-            <label
-                htmlFor="playerName"
-                className="block text-sm font-medium leading-6 text-white"
-            >
-                {label}
-            </label>
-            <div className="mt-2">
-                <input
-                    id="playerName"
-                    name="playerName"
-                    type="text"
-                    required={true}
-                    placeholder="Name"
-                    value={value}
-                    onChange={(e) => setValue(e.target.value)}
-                    className="peer block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-fuchsia-500 sm:text-sm sm:leading-6"
-                />
             </div>
         </div>
     );

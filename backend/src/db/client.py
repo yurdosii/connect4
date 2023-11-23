@@ -5,13 +5,13 @@ from typing import Any, cast
 from bson import ObjectId
 from fastapi import FastAPI
 from motor.motor_asyncio import AsyncIOMotorCollection, AsyncIOMotorDatabase
-from pymongo.results import InsertOneResult, UpdateResult
+from pymongo.results import DeleteResult, InsertOneResult, UpdateResult
 
-from src.api.models import MongoDBModel
+from ..api.models import MongoDBModel
 
 
 class MongoDBClient:
-    __instance = None
+    __instance = None  # singleton
     mongodb: AsyncIOMotorDatabase
 
     def __new__(cls) -> "MongoDBClient":
@@ -33,15 +33,29 @@ class MongoDBClient:
         data |= {"created_at": now, "updated_at": now}
         return await collection.insert_one(data)
 
-    async def get(self, model: MongoDBModel, id: str) -> dict[str, Any] | None:
+    async def get(
+        self, model: MongoDBModel, **kwargs
+    ) -> dict[str, Any] | None:
         collection = self.get_collection(model)
-        object_id = ObjectId(id)
-        result = cast(
-            dict[str, Any], await collection.find_one({"_id": object_id})
-        )
+        id = kwargs.pop("id", None)
+        if id is not None:
+            kwargs["_id"] = ObjectId(id)
+
+        result = await collection.find_one(kwargs)
         if result is None:
             return None
+
+        result = cast(dict[str, Any], result)
         return result | {"id": result.pop("_id")}  # _id -> id
+
+    async def list(self, model: MongoDBModel) -> list[dict[str, Any]]:
+        collection = self.get_collection(model)
+        result = collection.find({})
+        games = []
+        async for game in result:
+            game = cast(dict[str, Any], game)
+            games.append(game | {"id": game.pop("_id")})
+        return games
 
     async def update_one(
         self, model: MongoDBModel, id: str, data: dict[str, Any]
@@ -50,6 +64,10 @@ class MongoDBClient:
         object_id = ObjectId(id)
         data |= {"updated_at": datetime.datetime.now()}
         return await collection.update_one({"_id": object_id}, {"$set": data})
+
+    async def delete_many(self, model: MongoDBModel) -> DeleteResult:
+        collection = self.get_collection(model)
+        return await collection.delete_many({})
 
 
 def get_current_app() -> FastAPI:

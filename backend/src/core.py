@@ -56,8 +56,18 @@ def init_board() -> list[list[int]]:
     return [[0 for _ in range(M)] for _ in range(N)]
 
 
+def calculate_move_row_by_col(board: list[list[int]], col: int) -> int | None:
+    # calculate possible move row for specified col
+    if col < 0 or col >= M:
+        return None
+    for row in range(N - 1, -1, -1):
+        if board[row][col] == PlayerEnum.empty:
+            return row
+    return None
+
+
 def is_valid_move(
-    row: int | None, col: int | None, board: list[list[int]]
+    board: list[list[int]], row: int | None, col: int | None
 ) -> bool:
     if row is None or col is None:
         return False
@@ -66,12 +76,6 @@ def is_valid_move(
     if board[row][col] != 0:
         return False
     return row == N - 1 or board[row + 1][col] != 0
-
-
-def make_move(
-    row: int, col: int, board: list[list[int]], player_sign: int
-) -> None:
-    board[row][col] = player_sign
 
 
 def detect_winner(board: list[list[int]]) -> int | None:
