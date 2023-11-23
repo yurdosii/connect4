@@ -2,9 +2,13 @@
 
 import { useEffect, useState } from "react";
 
-interface GameData {
+import { getPlayerNameFromLocalStorage } from "@/utils/localStorageUtils";
+
+export interface GameData {
+    id: string;
     player1: string;
-    player2: string;
+    player2: string | null;
+    token: string;
     move_number: number;
     board: number[][];
     status: string;
@@ -18,6 +22,8 @@ export default function Game({ params }: { params: { id: string } }) {
         null,
     );
     const [ws, setWs] = useState<WebSocket | null>(null);
+
+    const playerName = getPlayerNameFromLocalStorage(params.id);
 
     useEffect(() => {
         const socket = new WebSocket(
@@ -45,7 +51,7 @@ export default function Game({ params }: { params: { id: string } }) {
     }, []);
 
     if (isLoading) return <div className="text-black">loading...</div>;
-    if (!data) return <div className="text-black">no data</div>;
+    if (!data || !playerName) return <div className="text-black">no data</div>;
 
     const handleColumnHover = (colIndex: number) => {
         setHighlightedColumn(colIndex);
@@ -55,15 +61,17 @@ export default function Game({ params }: { params: { id: string } }) {
     };
 
     const handleCellClick = (i: number, j: number) => {
-        if (ws && ws.readyState === WebSocket.OPEN) {
+        if (playerName && ws && ws.readyState === WebSocket.OPEN) {
             const payload = {
-                player: data.move_number % 2 ? data.player1 : data.player2,
+                player: playerName,
                 row: i,
                 col: j,
             };
             ws.send(JSON.stringify(payload));
         }
     };
+
+    if (!data.player2) return <WaitingPlayerToJoin token={data.token} />;
 
     return (
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -120,6 +128,18 @@ export default function Game({ params }: { params: { id: string } }) {
                         ))}
                     </tbody>
                 </table>
+            </div>
+        </div>
+    );
+}
+
+function WaitingPlayerToJoin({ token }: { token: string }) {
+    return (
+        <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+            <div className="text-center">Waiting for player to join</div>
+            <div className="mt-2 text-center">
+                Share this link with a friend to join: <br />
+                http://127.0.0.1:3000/games/join/{token}
             </div>
         </div>
     );

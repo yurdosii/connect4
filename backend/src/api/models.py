@@ -8,14 +8,23 @@ from enum import StrEnum
 from typing import Any
 
 from pydantic import BaseModel, Field, ValidationError, computed_field
+from pydantic.fields import FieldInfo
 from pydantic.types import NonNegativeInt
 
 from ..constants import PlayerEnum
 from ..core import calculate_move_row_by_col
 from .fields import PyObjectId
 
+PLAYER_FIELD = Field(
+    min_length=3,
+    max_length=50,
+    pattern=r"^[a-zA-Z0-9_ ]+$",
+    examples=["name1"],
+)
+
 
 class GameStatusEnum(StrEnum):
+    pending = "Pending"
     in_progress = "In progress"
     winner_player1 = "Player 1 won"
     winner_player2 = "Player 2 won"
@@ -38,32 +47,26 @@ class MongoDBModel(BaseModel):
         return cls.Meta.collection_name
 
 
-class GameBase(BaseModel):
-    player1: str = Field(
-        min_length=3,
-        max_length=50,
-        pattern=r"^[a-zA-Z0-9_]+$",
-        examples=["name1"],
-    )
-    player2: str = Field(
-        min_length=3,
-        max_length=50,
-        pattern=r"^[a-zA-Z0-9_]+$",
-        examples=["name2"],
-    )
+class StartGame(BaseModel):
+    player: str = PLAYER_FIELD
 
 
-class Game(MongoDBModel, GameBase, CreatedUpdatedMixin):
+class Game(MongoDBModel, CreatedUpdatedMixin):
     class Meta:
         collection_name = "games"
 
-    board: list[list[int]]
+    player1: str = PLAYER_FIELD
+    player2: str | None = FieldInfo.merge_field_infos(  # type: ignore[assignment]
+        PLAYER_FIELD, default=None
+    )
+    token: str
     move_number: int = 1
+    board: list[list[int]]
     winner: PlayerEnum | None = None
     finished_at: datetime.datetime | None = None
 
     @property
-    def next_player_to_move_username(self) -> str:
+    def next_player_to_move_username(self) -> str | None:
         return self.player1 if self.move_number % 2 else self.player2
 
     @property
@@ -77,7 +80,9 @@ class Game(MongoDBModel, GameBase, CreatedUpdatedMixin):
 
     @computed_field
     def status(self) -> GameStatusEnum:
-        if self.finished_at is None:
+        if self.player2 is None:
+            return GameStatusEnum.pending
+        elif self.finished_at is None:
             return GameStatusEnum.in_progress
         elif self.winner:
             return (

@@ -11,6 +11,10 @@ class GameNotFoundError(CustomError):
     default_message = "Game not found"
 
 
+class NotAllPlayersJoinedError(CustomError):
+    default_message = "Not all players joined"
+
+
 class GameFinishedError(CustomError):
     default_message = "Game finished"
 

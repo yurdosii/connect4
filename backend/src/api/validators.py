@@ -4,6 +4,7 @@ from ..exceptions import (
     GameFinishedError,
     GameNotFoundError,
     MoveNotValidError,
+    NotAllPlayersJoinedError,
     WrongPlayerToMoveError,
 )
 from .models import Game, Move
@@ -21,6 +22,9 @@ def validate(game: Game | None, move: Move | None) -> str | None:
 def validate_game(game: Game | None) -> None:
     if game is None:
         raise GameNotFoundError()
+
+    if game.player2 is None:
+        raise NotAllPlayersJoinedError()
 
     if game.finished_at:
         raise GameFinishedError()

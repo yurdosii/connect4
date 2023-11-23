@@ -33,14 +33,19 @@ class MongoDBClient:
         data |= {"created_at": now, "updated_at": now}
         return await collection.insert_one(data)
 
-    async def get(self, model: MongoDBModel, id: str) -> dict[str, Any] | None:
+    async def get(
+        self, model: MongoDBModel, **kwargs
+    ) -> dict[str, Any] | None:
         collection = self.get_collection(model)
-        object_id = ObjectId(id)
-        result = cast(
-            dict[str, Any], await collection.find_one({"_id": object_id})
-        )
+        id = kwargs.pop("id", None)
+        if id is not None:
+            kwargs["_id"] = ObjectId(id)
+
+        result = await collection.find_one(kwargs)
         if result is None:
             return None
+
+        result = cast(dict[str, Any], result)
         return result | {"id": result.pop("_id")}  # _id -> id
 
     async def list(self, model: MongoDBModel) -> list[dict[str, Any]]:
