@@ -17,7 +17,7 @@ from .crud import (
     save_game,
     start_new_game,
 )
-from .models import Game, Move, StartGame, get_model_safe
+from .models import Game, MoveInput, StartGame, get_model_safe
 from .shortcuts import make_move
 from .validators import validate
 from .websocket import connection_manager
@@ -106,7 +106,7 @@ async def websocket_game_endpoint(websocket: WebSocket, game_id: str) -> None:
 
             # get game and move
             game = await get_game_from_db(id=game_id)
-            move = get_model_safe(Move, move_data)
+            move = get_model_safe(MoveInput, move_data)
 
             # validations
             error_msg = validate(game, move)  # type: ignore[arg-type]
@@ -116,7 +116,7 @@ async def websocket_game_endpoint(websocket: WebSocket, game_id: str) -> None:
 
             # make move
             game = cast(Game, game)
-            move = cast(Move, move)
+            move = cast(MoveInput, move)
             make_move(game, move.col)  # type: ignore[arg-type]
 
             # update DB

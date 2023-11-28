@@ -4,6 +4,12 @@ import { useEffect, useState } from "react";
 
 import { getPlayerNameFromLocalStorage } from "@/utils/localStorageUtils";
 
+interface MoveData {
+    row: number;
+    col: number;
+    val: number;
+}
+
 export interface GameData {
     id: string;
     player1: string;
@@ -11,6 +17,7 @@ export interface GameData {
     token: string;
     move_number: number;
     board: number[][];
+    moves: MoveData[];
     status: string;
     finished_at: string | null;
 }
@@ -22,6 +29,7 @@ export default function Game({ params }: { params: { id: string } }) {
         null,
     );
     const [ws, setWs] = useState<WebSocket | null>(null);
+    const [replayInProgress, setReplayInProgress] = useState(false);
 
     const playerName = getPlayerNameFromLocalStorage(params.id);
 
@@ -71,6 +79,39 @@ export default function Game({ params }: { params: { id: string } }) {
         }
     };
 
+    const handleReplayGame = () => {
+        if (replayInProgress || !data || !data.moves) {
+            return;
+        }
+        setReplayInProgress(true);
+
+        // init empty 6x7 board
+        const finalBoard = data.board;
+        const N = 6;
+        const M = 7;
+        let newBoard = Array.from({ length: N }, () => Array(M).fill(0));
+
+        // set empty
+        setData({ ...data, board: newBoard });
+
+        setTimeout(() => {
+            data.moves.forEach((move: MoveData, i: number) => {
+                setTimeout(() => {
+                    setData((prevState: GameData | null) => {
+                        if (!prevState) return prevState;
+
+                        newBoard[move.row][move.col] = move.val;
+                        if (i == data.moves.length - 1) {
+                            setReplayInProgress(false);
+                            return { ...prevState, board: finalBoard };
+                        }
+                        return { ...prevState, board: newBoard };
+                    });
+                }, i * 500);
+            });
+        }, 500);
+    };
+
     if (!data.player2) return <WaitingPlayerToJoin token={data.token} />;
 
     return (
@@ -84,10 +125,20 @@ export default function Game({ params }: { params: { id: string } }) {
                 <p className="text-center"> Status: {data.status}</p>
                 <p className="text-center"> Move #: {data.move_number} </p>
                 {data.finished_at && (
-                    <p className="text-center">
-                        {" "}
-                        Game finished at: {new Date(data.finished_at).toLocaleString()}{" "}
-                    </p>
+                    <div>
+                        <p className="text-center">
+                            {" "}
+                            Game finished at: {new Date(
+                                data.finished_at,
+                            ).toLocaleString()}{" "}
+                        </p>
+                        <button
+                            onClick={handleReplayGame}
+                            className="w-full justify-center rounded-md bg-fuchsia-500 bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-fuchsia-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fuchsia-500"
+                        >
+                            Replay game
+                        </button>
+                    </div>
                 )}
             </div>
 

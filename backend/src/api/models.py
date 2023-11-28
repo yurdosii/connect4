@@ -51,6 +51,12 @@ class StartGame(BaseModel):
     player: str = PLAYER_FIELD
 
 
+class Move(BaseModel):
+    row: int
+    col: int
+    val: int
+
+
 class Game(MongoDBModel, CreatedUpdatedMixin):
     class Meta:
         collection_name = "games"
@@ -62,6 +68,7 @@ class Game(MongoDBModel, CreatedUpdatedMixin):
     token: str
     move_number: int = 1
     board: list[list[int]]
+    moves: list[Move] = Field(default_factory=list)
     winner: PlayerEnum | None = None
     finished_at: datetime.datetime | None = None
 
@@ -96,7 +103,7 @@ class Game(MongoDBModel, CreatedUpdatedMixin):
         return calculate_move_row_by_col(self.board, col)
 
 
-class Move(BaseModel):
+class MoveInput(BaseModel):
     player: str
     col: NonNegativeInt
 
