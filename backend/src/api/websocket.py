@@ -3,24 +3,26 @@ from typing import Any
 
 from fastapi import WebSocket
 
+from .fields import PyObjectId
 from .models import Game
 
 
 class ConnectionManager:
     def __init__(self) -> None:
-        self.games: dict[str, Any] = defaultdict(lambda: defaultdict(list))
+        self.games: dict[PyObjectId, Any] = defaultdict(
+            lambda: defaultdict(list)
+        )
 
-    async def connect(self, websocket: WebSocket, game_id: str) -> None:
+    async def connect(self, websocket: WebSocket, game_id: PyObjectId) -> None:
         await websocket.accept()
         self.games[game_id]["players"].append(websocket)
 
     async def broadcast_game(self, game: Game) -> None:
-        game_id = str(game.id)
         json_data = game.model_dump_json()
-        for connection in self.games[game_id]["players"]:
+        for connection in self.games[game.id]["players"]:
             await connection.send_json(json_data)
 
-    def disconnect(self, websocket: WebSocket, game_id: str) -> None:
+    def disconnect(self, websocket: WebSocket, game_id: PyObjectId) -> None:
         players = self.games[game_id]["players"]  # safe due to defaultdict
         if websocket in players:
             players.remove(websocket)

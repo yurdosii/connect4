@@ -17,6 +17,7 @@ from .crud import (
     save_game,
     start_new_game,
 )
+from .fields import PyObjectId
 from .models import Game, MoveInput, StartGame, get_model_safe
 from .shortcuts import make_move
 from .validators import validate
@@ -44,7 +45,7 @@ async def list_games() -> list[Game]:
 
 
 @router.get("/{game_id}/")
-async def get_game_by_id(game_id: str) -> Game:
+async def get_game_by_id(game_id: PyObjectId) -> Game:
     game = await get_game_from_db(id=game_id)
     if game is None:
         raise HTTPException(
@@ -97,7 +98,9 @@ async def get_game_by_token(token: str) -> Game:
 
 
 @router.websocket("/ws/game/{game_id}/")
-async def websocket_game_endpoint(websocket: WebSocket, game_id: str) -> None:
+async def websocket_game_endpoint(
+    websocket: WebSocket, game_id: PyObjectId
+) -> None:
     await connection_manager.connect(websocket, game_id)
 
     try:
