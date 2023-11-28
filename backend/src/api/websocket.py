@@ -3,7 +3,7 @@ from typing import Any
 
 from fastapi import WebSocket
 
-from .fields import PyObjectId
+from ..fields import PyObjectId
 from .models import Game
 
 

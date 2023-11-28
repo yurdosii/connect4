@@ -9,6 +9,8 @@ from fastapi import (
     status,
 )
 
+from ..fields import PyObjectId
+from ..models import get_model_safe
 from .crud import (
     delete_games_from_db,
     get_game_from_db,
@@ -17,8 +19,7 @@ from .crud import (
     save_game,
     start_new_game,
 )
-from .fields import PyObjectId
-from .models import Game, MoveInput, StartGame, get_model_safe
+from .models import Game, MoveInput, StartGame
 from .shortcuts import make_move
 from .validators import validate
 from .websocket import connection_manager

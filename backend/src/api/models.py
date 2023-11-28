@@ -5,15 +5,14 @@ draw -> winner is None and finished_at is not None
 """
 import datetime
 from enum import StrEnum
-from typing import Any
 
-from pydantic import BaseModel, Field, ValidationError, computed_field
+from pydantic import BaseModel, Field, computed_field
 from pydantic.fields import FieldInfo
 from pydantic.types import NonNegativeInt
 
 from ..constants import PlayerEnum
 from ..core import calculate_move_row_by_col
-from .fields import PyObjectId
+from ..models import CreatedUpdatedMixin, MongoDBModel
 
 PLAYER_FIELD = Field(
     min_length=3,
@@ -31,24 +30,13 @@ class GameStatusEnum(StrEnum):
     draw = "Draw"
 
 
-class CreatedUpdatedMixin(BaseModel):
-    created_at: datetime.datetime
-    updated_at: datetime.datetime
-
-
-class MongoDBModel(BaseModel):
-    class Meta:
-        collection_name: str
-
-    id: PyObjectId
-
-    @classmethod
-    def get_collection_name(cls) -> str:
-        return cls.Meta.collection_name
-
-
 class StartGame(BaseModel):
     player: str = PLAYER_FIELD
+
+
+class MoveInput(BaseModel):
+    player: str
+    col: NonNegativeInt
 
 
 class Move(BaseModel):
@@ -101,17 +89,3 @@ class Game(MongoDBModel, CreatedUpdatedMixin):
 
     def get_move_row_by_col(self, col: int) -> int | None:
         return calculate_move_row_by_col(self.board, col)
-
-
-class MoveInput(BaseModel):
-    player: str
-    col: NonNegativeInt
-
-
-def get_model_safe(
-    model: type[BaseModel], model_data: dict[str, Any]
-) -> BaseModel | None:
-    try:
-        return model(**model_data)
-    except ValidationError:
-        return None

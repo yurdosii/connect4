@@ -5,7 +5,7 @@ import shortuuid
 
 from ..core import init_board
 from ..db.client import MongoDBClient
-from .fields import PyObjectId
+from ..fields import PyObjectId
 from .models import Game
 
 logger = logging.getLogger(__name__)

@@ -6,8 +6,8 @@ from fastapi import FastAPI
 from motor.motor_asyncio import AsyncIOMotorCollection, AsyncIOMotorDatabase
 from pymongo.results import DeleteResult, InsertOneResult, UpdateResult
 
-from ..api.fields import PyObjectId
 from ..api.models import MongoDBModel
+from ..fields import PyObjectId
 
 
 class MongoDBClient:
