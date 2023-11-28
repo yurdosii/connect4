@@ -17,7 +17,7 @@ export default function Game({ params }: { params: { token: string } }) {
     const [playerName, setPlayerName] = useState("");
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:8000/game/join/${params.token}/`)
+        fetch(`http://127.0.0.1:8000/games/join/${params.token}/`)
             .then((res) => res.json())
             .then((data) => {
                 const savedPlayerName = getPlayerNameFromLocalStorage(data.id);
@@ -33,7 +33,7 @@ export default function Game({ params }: { params: { token: string } }) {
 
     function handleJoinGame() {
         const data = { player: playerName };
-        fetch(`http://127.0.0.1:8000/game/join/${params.token}`, {
+        fetch(`http://127.0.0.1:8000/games/join/${params.token}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data),

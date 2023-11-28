@@ -60,7 +60,7 @@ class Game(MongoDBModel, CreatedUpdatedMixin):
     winner: PlayerEnum | None = None
     finished_at: datetime.datetime | None = None
 
-    @property
+    @computed_field
     def next_player_to_move_username(self) -> str | None:
         return self.player1 if self.move_number % 2 else self.player2
 

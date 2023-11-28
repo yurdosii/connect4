@@ -10,7 +10,7 @@ export default function Home() {
 
     function handleStartGame() {
         const data = { player: playerName };
-        fetch("http://127.0.0.1:8000/game/start/", {
+        fetch("http://127.0.0.1:8000/games/", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data),

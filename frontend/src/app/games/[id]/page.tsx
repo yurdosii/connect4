@@ -19,6 +19,7 @@ export interface GameData {
     board: number[][];
     moves: MoveData[];
     status: string;
+    next_player_to_move_username: string;
     finished_at: string | null;
 }
 
@@ -35,11 +36,11 @@ export default function Game({ params }: { params: { id: string } }) {
 
     useEffect(() => {
         const socket = new WebSocket(
-            `ws://127.0.0.1:8000/game/ws/game/${params.id}/`,
+            `ws://127.0.0.1:8000/games/ws/games/${params.id}/`,
         );
         socket.addEventListener("open", () => {
             // get data only when
-            fetch(`http://127.0.0.1:8000/game/${params.id}/`)
+            fetch(`http://127.0.0.1:8000/games/${params.id}/`)
                 .then((res) => res.json())
                 .then((data) => {
                     setData(data);
@@ -164,7 +165,10 @@ export default function Game({ params }: { params: { id: string } }) {
                                                             ? "bg-green-500"
                                                             : ""
                                                 }
-                                                ${highlightedColumn === colIndex
+                                                ${
+                                                    !data.finished_at &&
+                                                    data.next_player_to_move_username == playerName &&
+                                                    highlightedColumn === colIndex
                                                     ? "bg-gray-300"
                                                     : ""
                                                 }

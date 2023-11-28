@@ -26,10 +26,10 @@ from .websocket import connection_manager
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/game", tags=["Game"])
+router = APIRouter(prefix="/games", tags=["Game"])
 
 
-@router.post("/start/")
+@router.post("/")
 async def start_game(player_data: StartGame) -> Game:
     game = await start_new_game(player_data.player)
     if game is None:
@@ -98,7 +98,7 @@ async def get_game_by_token(token: str) -> Game:
     return game
 
 
-@router.websocket("/ws/game/{game_id}/")
+@router.websocket("/ws/games/{game_id}/")
 async def websocket_game_endpoint(
     websocket: WebSocket, game_id: PyObjectId
 ) -> None:
