@@ -16,7 +16,6 @@ export interface GameData {
     id: string;
     player1: string;
     player2: string | null;
-    token: string;
     move_number: number;
     board: number[][];
     moves: MoveData[];
@@ -65,7 +64,7 @@ export default function PlayGame({ params }: { params: { id: string } }) {
 
     if (isLoading) return <div className="text-black">loading...</div>;
     if (!data || !playerName) return <div className="text-black">no data</div>;
-    if (!data.player2) return <WaitingPlayerToJoin token={data.token} />;
+    if (!data.player2) return <WaitingPlayerToJoin id={params.id} />;
 
     return (
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -75,7 +74,7 @@ export default function PlayGame({ params }: { params: { id: string } }) {
     );
 }
 
-function WaitingPlayerToJoin({ token }: { token: string }) {
+function WaitingPlayerToJoin({ id }: { id: string }) {
     const frontend_base_url =
         window.location.protocol + "//" + window.location.host;
 
@@ -84,7 +83,7 @@ function WaitingPlayerToJoin({ token }: { token: string }) {
             <div className="text-center">Waiting for player to join</div>
             <div className="mt-2 text-center">
                 Share this link with a friend to join: <br />
-                {frontend_base_url}/games/join/{token}
+                {frontend_base_url}/games/{id}/join/
             </div>
         </div>
     );

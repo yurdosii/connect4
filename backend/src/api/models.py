@@ -53,7 +53,6 @@ class Game(MongoDBModel, CreatedUpdatedMixin):
     player2: str | None = FieldInfo.merge_field_infos(  # type: ignore[assignment]
         PLAYER_FIELD, default=None
     )
-    token: str
     move_number: int = 1
     board: list[list[int]]
     moves: list[Move] = Field(default_factory=list)

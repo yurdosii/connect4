@@ -61,9 +61,9 @@ async def delete_games() -> dict[str, int]:
     return {"deleted_count": deleted_count}
 
 
-@router.post("/join/{token}/")
-async def join_game(token: str, player_data: StartGame) -> Game:
-    game = await get_game_from_db(token=token)
+@router.post("/{game_id}/join/")
+async def join_game(game_id: PyObjectId, player_data: StartGame) -> Game:
+    game = await get_game_from_db(id=game_id)
     if game is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Game not found"
@@ -86,16 +86,6 @@ async def join_game(token: str, player_data: StartGame) -> Game:
     await connection_manager.broadcast_game(updated_game)
 
     return updated_game
-
-
-@router.get("/join/{token}/")
-async def get_game_by_token(token: str) -> Game:
-    game = await get_game_from_db(token=token)
-    if game is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Game not found"
-        )
-    return game
 
 
 @router.websocket("/ws/games/{game_id}/")

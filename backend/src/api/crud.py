@@ -1,8 +1,6 @@
 import logging
 from typing import Any
 
-import shortuuid
-
 from ..core import init_board
 from ..db.client import MongoDBClient
 from ..fields import PyObjectId
@@ -13,11 +11,7 @@ logger = logging.getLogger(__name__)
 
 async def start_new_game(player1: str) -> Game | None:
     client = MongoDBClient()
-    game_data = {
-        "player1": player1,
-        "board": init_board(),
-        "token": shortuuid.uuid(),
-    }
+    game_data = {"player1": player1, "board": init_board()}
     inserted_result = await client.insert(Game, game_data)  # type: ignore[arg-type]
     return await get_game_from_db(id=inserted_result.inserted_id)
 
