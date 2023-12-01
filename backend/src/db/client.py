@@ -2,12 +2,12 @@ import datetime
 import importlib
 from typing import Any, cast
 
-from bson import ObjectId
 from fastapi import FastAPI
 from motor.motor_asyncio import AsyncIOMotorCollection, AsyncIOMotorDatabase
 from pymongo.results import DeleteResult, InsertOneResult, UpdateResult
 
 from ..api.models import MongoDBModel
+from ..fields import PyObjectId
 
 
 class MongoDBClient:
@@ -39,7 +39,7 @@ class MongoDBClient:
         collection = self.get_collection(model)
         id = kwargs.pop("id", None)
         if id is not None:
-            kwargs["_id"] = ObjectId(id)
+            kwargs["_id"] = id
 
         result = await collection.find_one(kwargs)
         if result is None:
@@ -58,12 +58,11 @@ class MongoDBClient:
         return games
 
     async def update_one(
-        self, model: MongoDBModel, id: str, data: dict[str, Any]
+        self, model: MongoDBModel, id: PyObjectId, data: dict[str, Any]
     ) -> UpdateResult:
         collection = self.get_collection(model)
-        object_id = ObjectId(id)
         data |= {"updated_at": datetime.datetime.now()}
-        return await collection.update_one({"_id": object_id}, {"$set": data})
+        return await collection.update_one({"_id": id}, {"$set": data})
 
     async def delete_many(self, model: MongoDBModel) -> DeleteResult:
         collection = self.get_collection(model)

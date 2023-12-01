@@ -7,10 +7,10 @@ from ..exceptions import (
     NotAllPlayersJoinedError,
     WrongPlayerToMoveError,
 )
-from .models import Game, Move
+from .models import Game, MoveInput
 
 
-def validate(game: Game | None, move: Move | None) -> str | None:
+def validate(game: Game | None, move: MoveInput | None) -> str | None:
     try:
         validate_game(game)
         validate_move(game, move)  # type: ignore[arg-type]
@@ -30,7 +30,7 @@ def validate_game(game: Game | None) -> None:
         raise GameFinishedError()
 
 
-def validate_move(game: Game, move: Move | None) -> None:
+def validate_move(game: Game, move: MoveInput | None) -> None:
     if move is None:
         raise MoveNotValidError()
 

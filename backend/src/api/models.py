@@ -5,15 +5,14 @@ draw -> winner is None and finished_at is not None
 """
 import datetime
 from enum import StrEnum
-from typing import Any
 
-from pydantic import BaseModel, Field, ValidationError, computed_field
+from pydantic import BaseModel, Field, computed_field
 from pydantic.fields import FieldInfo
 from pydantic.types import NonNegativeInt
 
 from ..constants import PlayerEnum
 from ..core import calculate_move_row_by_col
-from .fields import PyObjectId
+from ..models import CreatedUpdatedMixin, MongoDBModel
 
 PLAYER_FIELD = Field(
     min_length=3,
@@ -31,24 +30,19 @@ class GameStatusEnum(StrEnum):
     draw = "Draw"
 
 
-class CreatedUpdatedMixin(BaseModel):
-    created_at: datetime.datetime
-    updated_at: datetime.datetime
-
-
-class MongoDBModel(BaseModel):
-    class Meta:
-        collection_name: str
-
-    id: PyObjectId
-
-    @classmethod
-    def get_collection_name(cls) -> str:
-        return cls.Meta.collection_name
-
-
 class StartGame(BaseModel):
     player: str = PLAYER_FIELD
+
+
+class MoveInput(BaseModel):
+    player: str
+    col: NonNegativeInt
+
+
+class Move(BaseModel):
+    row: int
+    col: int
+    val: int
 
 
 class Game(MongoDBModel, CreatedUpdatedMixin):
@@ -62,10 +56,11 @@ class Game(MongoDBModel, CreatedUpdatedMixin):
     token: str
     move_number: int = 1
     board: list[list[int]]
+    moves: list[Move] = Field(default_factory=list)
     winner: PlayerEnum | None = None
     finished_at: datetime.datetime | None = None
 
-    @property
+    @computed_field
     def next_player_to_move_username(self) -> str | None:
         return self.player1 if self.move_number % 2 else self.player2
 
@@ -94,17 +89,3 @@ class Game(MongoDBModel, CreatedUpdatedMixin):
 
     def get_move_row_by_col(self, col: int) -> int | None:
         return calculate_move_row_by_col(self.board, col)
-
-
-class Move(BaseModel):
-    player: str
-    col: NonNegativeInt
-
-
-def get_model_safe(
-    model: type[BaseModel], model_data: dict[str, Any]
-) -> BaseModel | None:
-    try:
-        return model(**model_data)
-    except ValidationError:
-        return None

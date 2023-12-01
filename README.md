@@ -21,6 +21,12 @@ Connect 4
 cp .env.example .env
 ```
 
+## Frontend
+### Prerequisites
+```
+cp .env.example .env
+```
+
 ```
 pre-commit install
 pre-commit install --hook-type commit-msg

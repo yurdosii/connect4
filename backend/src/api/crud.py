@@ -5,6 +5,7 @@ import shortuuid
 
 from ..core import init_board
 from ..db.client import MongoDBClient
+from ..fields import PyObjectId
 from .models import Game
 
 logger = logging.getLogger(__name__)
@@ -18,7 +19,7 @@ async def start_new_game(player1: str) -> Game | None:
         "token": shortuuid.uuid(),
     }
     inserted_result = await client.insert(Game, game_data)  # type: ignore[arg-type]
-    return await get_game_from_db(id=str(inserted_result.inserted_id))
+    return await get_game_from_db(id=inserted_result.inserted_id)
 
 
 async def join_new_game(game: Game, player2: str) -> Game | None:
@@ -41,7 +42,9 @@ async def list_games_from_db() -> list[dict[str, Any]]:
     return await client.list(Game)  # type: ignore[arg-type]
 
 
-async def save_game(game_id: str, game_data: dict[str, Any]) -> Game | None:
+async def save_game(
+    game_id: PyObjectId, game_data: dict[str, Any]
+) -> Game | None:
     client = MongoDBClient()
     await client.update_one(Game, game_id, game_data)  # type: ignore[arg-type]
     return await get_game_from_db(id=game_id)
