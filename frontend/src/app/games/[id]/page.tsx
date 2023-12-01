@@ -1,5 +1,6 @@
 "use client";
 
+import { BACKEND_API_BASE_URL, BACKEND_WS_BASE_URL } from "@/constants";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 import { Connect4Button } from "@/components/buttons";
@@ -33,11 +34,11 @@ export default function PlayGame({ params }: { params: { id: string } }) {
 
     useEffect(() => {
         const socket = new WebSocket(
-            `ws://127.0.0.1:8000/games/ws/games/${params.id}/`,
+            `${BACKEND_WS_BASE_URL}/games/ws/games/${params.id}/`,
         );
         socket.addEventListener("open", () => {
             // get data only when
-            fetch(`http://127.0.0.1:8000/games/${params.id}/`)
+            fetch(`${BACKEND_API_BASE_URL}/games/${params.id}/`)
                 .then((res) => res.json())
                 .then((data) => {
                     setData(data);
@@ -69,12 +70,14 @@ export default function PlayGame({ params }: { params: { id: string } }) {
 }
 
 function WaitingPlayerToJoin({ token }: { token: string }) {
+    const frontend_base_url = window.location.protocol + "//" + window.location.host;
+
     return (
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
             <div className="text-center">Waiting for player to join</div>
             <div className="mt-2 text-center">
                 Share this link with a friend to join: <br />
-                http://127.0.0.1:3000/games/join/{token}
+                {frontend_base_url}/games/join/{token}
             </div>
         </div>
     );

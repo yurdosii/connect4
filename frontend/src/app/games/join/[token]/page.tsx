@@ -6,6 +6,7 @@ import {
 } from "@/utils/localStorageUtils";
 import { useEffect, useState } from "react";
 
+import { BACKEND_API_BASE_URL } from "@/constants";
 import { Connect4Button } from "@/components/buttons";
 import { GameData } from "@/app/games/[id]/page";
 import { PlayerNameInput } from "@/components/input";
@@ -18,7 +19,7 @@ export default function JoinGame({ params }: { params: { token: string } }) {
     const [playerName, setPlayerName] = useState("");
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:8000/games/join/${params.token}/`)
+        fetch(`${BACKEND_API_BASE_URL}/games/join/${params.token}/`)
             .then((res) => res.json())
             .then((data) => {
                 const savedPlayerName = getPlayerNameFromLocalStorage(data.id);
@@ -34,7 +35,7 @@ export default function JoinGame({ params }: { params: { token: string } }) {
 
     function handleJoinGame() {
         const data = { player: playerName };
-        fetch(`http://127.0.0.1:8000/games/join/${params.token}`, {
+        fetch(`${BACKEND_API_BASE_URL}/games/join/${params.token}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data),

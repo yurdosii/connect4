@@ -1,5 +1,6 @@
 "use client";
 
+import { BACKEND_API_BASE_URL } from "@/constants";
 import { Connect4Button } from "@/components/buttons";
 import { PlayerNameInput } from "@/components/input";
 import { setPlayerNameInLocalStorage } from "@/utils/localStorageUtils";
@@ -12,7 +13,7 @@ export default function StartGame() {
 
     function handleStartGame() {
         const data = { player: playerName };
-        fetch("http://127.0.0.1:8000/games/", {
+        fetch(`${BACKEND_API_BASE_URL}/games/`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data),
