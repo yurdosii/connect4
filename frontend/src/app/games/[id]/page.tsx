@@ -39,10 +39,16 @@ export default function PlayGame({ params }: { params: { id: string } }) {
         socket.addEventListener("open", () => {
             // get data only when
             fetch(`${BACKEND_API_BASE_URL}/games/${params.id}/`)
-                .then((res) => res.json())
+                .then((response) => {
+                    if (!response.ok) throw new Error();
+                    return response.json();
+                })
                 .then((data) => {
                     setData(data);
                     setLoading(false);
+                })
+                .catch((err) => {
+                    console.log("Something went wrong", err);
                 });
         });
         socket.addEventListener("message", (event) => {
@@ -70,7 +76,8 @@ export default function PlayGame({ params }: { params: { id: string } }) {
 }
 
 function WaitingPlayerToJoin({ token }: { token: string }) {
-    const frontend_base_url = window.location.protocol + "//" + window.location.host;
+    const frontend_base_url =
+        window.location.protocol + "//" + window.location.host;
 
     return (
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">

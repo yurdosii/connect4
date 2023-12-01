@@ -20,7 +20,10 @@ export default function JoinGame({ params }: { params: { token: string } }) {
 
     useEffect(() => {
         fetch(`${BACKEND_API_BASE_URL}/games/join/${params.token}/`)
-            .then((res) => res.json())
+            .then((response) => {
+                if (!response.ok) throw new Error()
+                return response.json()
+            })
             .then((data) => {
                 const savedPlayerName = getPlayerNameFromLocalStorage(data.id);
                 if (data.player2 || savedPlayerName) {
@@ -28,7 +31,10 @@ export default function JoinGame({ params }: { params: { token: string } }) {
                 }
                 setGameData(data);
                 setLoading(false);
-            });
+            })
+            .catch((err) => {
+                console.log("Something went wrong", err);
+            });;
     }, []);
 
     if (isLoading) return <div className="text-black">loading...</div>;
@@ -40,13 +46,16 @@ export default function JoinGame({ params }: { params: { token: string } }) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data),
         })
-            .then((response) => response.json())
+            .then((response) => {
+                if (!response.ok) throw new Error()
+                return response.json()
+            })
             .then((data) => {
                 setPlayerNameInLocalStorage(data.id, playerName);
                 router.push(`/games/${data.id}`);
             })
             .catch((err) => {
-                console.log(err);
+                console.log("Something went wrong", err);
             });
     }
 

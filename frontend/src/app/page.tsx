@@ -18,13 +18,16 @@ export default function StartGame() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data),
         })
-            .then((response) => response.json())
+            .then((response) => {
+                if (!response.ok) throw new Error();
+                return response.json();
+            })
             .then((data) => {
                 setPlayerNameInLocalStorage(data.id, playerName);
                 router.push(`/games/${data.id}`);
             })
             .catch((err) => {
-                console.log(err);
+                console.log("Something went wrong", err);
             });
     }
 
