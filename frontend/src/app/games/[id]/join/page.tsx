@@ -12,14 +12,14 @@ import { GameData } from "@/app/games/[id]/page";
 import { PlayerNameInput } from "@/components/input";
 import { useRouter } from "next/navigation";
 
-export default function JoinGame({ params }: { params: { token: string } }) {
+export default function JoinGame({ params }: { params: { id: string } }) {
     const router = useRouter();
     const [gameData, setGameData] = useState<GameData | null>(null);
     const [isLoading, setLoading] = useState(true);
     const [playerName, setPlayerName] = useState("");
 
     useEffect(() => {
-        fetch(`${BACKEND_API_BASE_URL}/games/join/${params.token}/`)
+        fetch(`${BACKEND_API_BASE_URL}/games/${params.id}/`)
             .then((response) => {
                 if (!response.ok) throw new Error()
                 return response.json()
@@ -41,7 +41,7 @@ export default function JoinGame({ params }: { params: { token: string } }) {
 
     function handleJoinGame() {
         const data = { player: playerName };
-        fetch(`${BACKEND_API_BASE_URL}/games/join/${params.token}`, {
+        fetch(`${BACKEND_API_BASE_URL}/games/${params.id}/join/`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data),
