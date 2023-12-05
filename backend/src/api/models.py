@@ -72,7 +72,7 @@ class Game(MongoDBModel, CreatedUpdatedMixin):
             else PlayerEnum.player2
         )
 
-    @computed_field
+    @property
     def status(self) -> GameStatusEnum:
         if self.player2 is None:
             return GameStatusEnum.pending

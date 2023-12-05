@@ -19,7 +19,6 @@ export interface GameData {
     move_number: number;
     board: number[][];
     moves: MoveData[];
-    status: string;
     next_player_to_move_username: string;
     finished_at: string | null;
 }
@@ -32,10 +31,10 @@ export default function PlayGame({ params }: { params: { id: string } }) {
     const playerName = getPlayerNameFromLocalStorage(params.id);
 
     useEffect(() => {
-        const socket = new WebSocket(
+        const ws = new WebSocket(
             `${BACKEND_WS_BASE_URL}/games/ws/games/${params.id}/`,
         );
-        socket.addEventListener("open", () => {
+        ws.addEventListener("open", () => {
             // get data only when
             fetch(`${BACKEND_API_BASE_URL}/games/${params.id}/`)
                 .then((response) => {
@@ -50,15 +49,15 @@ export default function PlayGame({ params }: { params: { id: string } }) {
                     console.log("Something went wrong", err);
                 });
         });
-        socket.addEventListener("message", (event) => {
+        ws.addEventListener("message", (event) => {
             const data = JSON.parse(JSON.parse(event.data));
             setData(data);
         });
-        setWs(socket);
+        setWs(ws);
 
         // clean up WS connection when the component is unmounted
         return () => {
-            socket.close();
+            ws.close();
         };
     }, []);
 
@@ -67,23 +66,57 @@ export default function PlayGame({ params }: { params: { id: string } }) {
     if (!data.player2) return <WaitingPlayerToJoin id={params.id} />;
 
     return (
-        <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-            <GameInfo gameData={data} setGameData={setData} />
+        <div className="flex flex-1 flex-col min-h-full px-6 py-12 lg:px-8 mx-96">
+            <GameInfo gameData={data} setGameData={setData} playerName={playerName} />
             <GameBoard gameData={data} playerName={playerName} ws={ws} />
         </div>
     );
 }
 
 function WaitingPlayerToJoin({ id }: { id: string }) {
+    const [isCopied, setIsCopied] = useState(false);
+
     const frontend_base_url =
         window.location.protocol + "//" + window.location.host;
+    const link_to_share = `${frontend_base_url}/games/${id}/join/`;
+
+    const handleLinkClick = () => {
+        navigator.clipboard.writeText(link_to_share);
+        setIsCopied(true);
+
+        setTimeout(() => setIsCopied(false), 1000);
+    };
 
     return (
-        <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-            <div className="text-center">Waiting for player to join</div>
-            <div className="mt-2 text-center">
-                Share this link with a friend to join: <br />
-                {frontend_base_url}/games/{id}/join/
+        <div className="flex flex-1 flex-col justify-center min-h-full">
+            <div
+                className={`
+                    mx-auto w-1/4 rounded-xl bg-gray-500
+                    px-2 py-12 text-center text-white
+                    shadow-lg shadow-gray-500/50
+                `}
+            >
+                <p className="text-xl font-bold">Waiting for player to join</p>
+                <div className="relative mt-4">
+                    Share this link with a friend to join (click to copy): <br />
+                    <span
+                        className={`cursor-pointer text-white hover:underline`}
+                        onClick={handleLinkClick}
+                    >
+                        {link_to_share}
+                    </span>
+                    <span
+                        className={`
+                            absolute left-1/2 transform -translate-x-1/2 top-14
+                            rounded-md bg-gray-400 px-2 py-1
+                            text-xs text-white
+                            transition-opacity duration-500
+                            ${isCopied ? "opacity-100" : "opacity-0"}
+                        `}
+                    >
+                        Copied!
+                    </span>
+                </div>
             </div>
         </div>
     );
@@ -92,9 +125,11 @@ function WaitingPlayerToJoin({ id }: { id: string }) {
 function GameInfo({
     gameData,
     setGameData,
+    playerName,
 }: {
     gameData: GameData | null;
     setGameData: Dispatch<SetStateAction<GameData | null>>;
+    playerName: string;
 }) {
     if (!gameData) return;
 
@@ -134,25 +169,39 @@ function GameInfo({
         }, 500);
     };
 
-    let human_finished_at = null;
+    let gameStatus = "";
+    let humanFinishedAt = null;
     if (gameData.finished_at) {
-        human_finished_at = new Date(gameData.finished_at).toLocaleString();
+        humanFinishedAt = new Date(gameData.finished_at).toLocaleString();
+        gameStatus = `Game finished at ${humanFinishedAt}`;
+    } else if (gameData.next_player_to_move_username == playerName) {
+        gameStatus = "It's your turn";
+    } else {
+        gameStatus = `It's ${gameData.next_player_to_move_username}'s turn`;
     }
 
     return (
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-            <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-white">
+        <div
+            className={`
+                w-2/5 p-5 mx-auto rounded-xl
+                bg-gray-600 text-center text-white
+                shadow-lg shadow-gray-600/50
+            `}
+        >
+            <p className="text-2xl font-bold leading-9 tracking-tight">
+                Connect4 BATTLE
+            </p>
+            <p className="text-xl font-bold leading-9 tracking-tight">
                 Game:
-                <span className="text-red-500"> {gameData.player1}</span> vs
+                <span className="text-red-400"> {gameData.player1}</span> vs
                 <span className="text-yellow-300"> {gameData.player2}</span>
-            </h2>
-            <p className="text-center"> Status: {gameData.status}</p>
-            {(!human_finished_at || replayInProgress) && (
-                <p className="text-center"> Move #: {gameData.move_number} </p>
+            </p>
+            <p className="text-center">{gameStatus}</p>
+            {(!humanFinishedAt || replayInProgress) && (
+                <p className="text-center"> Move #{gameData.move_number} </p>
             )}
-            {human_finished_at && (
-                <div>
-                    <p className="text-center"> Game finished at: {human_finished_at} </p>
+            {humanFinishedAt && (
+                <div className="mx-auto mt-2 w-1/2">
                     <Connect4Button
                         label="Replay Game"
                         onClickHandler={handleReplayGame}
@@ -197,9 +246,13 @@ function GameBoard({
     };
 
     return (
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-            To highlight: {highlightedColumn}
-            <table className="mx-auto mt-4">
+        <div
+            className={`
+                mx-auto mt-4 w-2/5 rounded-xl
+                bg-gray-500 p-5 shadow-lg shadow-gray-500/50
+            `}
+        >
+            <table className="mx-auto my-8">
                 <tbody>
                     {gameData.board.map((row: number[], rowIndex: number) => (
                         <tr key={`row-${rowIndex}`}>
@@ -252,13 +305,13 @@ function GameBoardCell({
             onMouseLeave={handleColumnLeave}
         >
             <button
-                className={`h-12 w-12 rounded-full border text-black transition duration-300
+                className={`h-20 w-20 rounded-full border-2 transition duration-200
                     ${cellValue === 1
-                        ? "bg-red-500"
+                        ? "bg-red-400"
                         : cellValue === 2
-                            ? "bg-yellow-400"
+                            ? "bg-yellow-300"
                             : cellValue == 3
-                                ? "bg-green-500"
+                                ? "bg-green-400"
                                 : ""
                     }
                     ${!gameData.finished_at &&
@@ -269,9 +322,7 @@ function GameBoardCell({
                     }
                 `}
                 onClick={() => handleCellClick(rowIndex, colIndex)}
-            >
-                {rowIndex} {colIndex}
-            </button>
+            ></button>
         </td>
     );
 }

@@ -61,14 +61,15 @@ export default function JoinGame({ params }: { params: { id: string } }) {
 
     return (
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-            <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-white">
+            <div className="sm:mx-auto sm:w-full sm:max-w-sm text-center">
+                <h2 className="mt-10 text-2xl font-bold leading-9 tracking-tight text-gray-600">
                     Join Game
                 </h2>
-                <h6 className="mt-1 text-center text-lg font-bold leading-9 tracking-tight text-white">
-                    "{gameData?.player1}" challenged your skills in Connect4. <br />
+                <h6 className="mt-1 text-lg leading-9 tracking-tight text-gray-600">
+                    <span className="text-cyan-600">{gameData?.player1} </span>
+                    challenged your skills in Connect4.
                 </h6>
-                <p className="mt-2 text-center">
+                <p className="mt-2 text-md text-gray-600">
                     Please enter your name and click "Join Game" to start the battle.
                 </p>
             </div>
