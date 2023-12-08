@@ -13,7 +13,7 @@ export function PlayerNameInput({
         <div>
             <label
                 htmlFor="playerName"
-                className="block text-sm font-medium leading-6 text-gray-500"
+                className="block text-sm font-medium leading-6 text-gray-500 dark:text-slate-300"
             >
                 {label}
             </label>
@@ -27,12 +27,13 @@ export function PlayerNameInput({
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
                     className={`
-                        w-full rounded-md border-0
+                        w-full rounded-lg border-0
                         py-1.5
-                        text-gray-500 placeholder:text-gray-300
-                        shadow-sm ring-1 ring-inset ring-gray-200
-                        focus:ring-2 focus:ring-inset focus:ring-gray-300
+                        shadow-sm ring-1 ring-inset
+                        focus:ring-2 focus:ring-inset
                         sm:text-sm sm:leading-6
+                        text-gray-500 placeholder:text-gray-300 ring-gray-200 focus:ring-gray-300
+                        dark:bg-slate-800 dark:text-slate-300 dark:placeholder:text-slate-600 dark:ring-slate-600 dark:focus:ring-slate-500
                     `}
                 />
             </div>
