@@ -91,16 +91,26 @@ function WaitingPlayerToJoin({ id }: { id: string }) {
         <div className="flex flex-1 flex-col justify-center min-h-full">
             <div
                 className={`
-                    mx-auto w-1/4 rounded-xl bg-gray-500
-                    px-2 py-12 text-center text-white
-                    shadow-lg shadow-gray-500/50
+                    mx-auto w-1/4 rounded-xl
+                    px-2 py-12 text-center
+                    shadow-lg
+                    border-2
+                    bg-cyan-600
+                    text-slate-100
+                    border-cyan-600
+                    shadow-cyan-500
+                    dark:bg-inherit
+                    dark:text-blue-100
+                    dark:border-blue-500
+                    dark:shadow-2xl
+                    dark:shadow-blue-600
                 `}
             >
                 <p className="text-xl font-bold">Waiting for player to join</p>
                 <div className="relative mt-4">
                     Share this link with a friend to join (click to copy): <br />
                     <span
-                        className={`cursor-pointer text-white hover:underline`}
+                        className={`cursor-pointer hover:underline dark:text-blue-400 dark:hover:text-blue-300`}
                         onClick={handleLinkClick}
                     >
                         {link_to_share}
@@ -108,9 +118,8 @@ function WaitingPlayerToJoin({ id }: { id: string }) {
                     <span
                         className={`
                             absolute left-1/2 transform -translate-x-1/2 top-14
-                            rounded-md bg-gray-400 px-2 py-1
-                            text-xs text-white
-                            transition-opacity duration-500
+                            rounded-md bg-cyan-500 text-slate-100 dark:bg-blue-500 dark:text-blue-100 px-2 py-1
+                            text-xs transition-opacity duration-500
                             ${isCopied ? "opacity-100" : "opacity-0"}
                         `}
                     >
@@ -127,12 +136,10 @@ function GameInfo({
     setGameData,
     playerName,
 }: {
-    gameData: GameData | null;
+    gameData: GameData;
     setGameData: Dispatch<SetStateAction<GameData | null>>;
     playerName: string;
 }) {
-    if (!gameData) return;
-
     const [replayInProgress, setReplayInProgress] = useState(false);
 
     const handleReplayGame = () => {
@@ -184,8 +191,17 @@ function GameInfo({
         <div
             className={`
                 w-2/5 p-5 mx-auto rounded-xl
-                bg-gray-600 text-center text-white
-                shadow-lg shadow-gray-600/50
+                text-center
+                shadow-lg
+                border-2
+                bg-slate-200
+                text-cyan-800
+                border-cyan-300
+                shadow-cyan-500
+                dark:bg-violet-950
+                dark:text-violet-100
+                dark:border-violet-500
+                dark:shadow-violet-500
             `}
         >
             <p className="text-2xl font-bold leading-9 tracking-tight">
@@ -193,15 +209,15 @@ function GameInfo({
             </p>
             <p className="text-xl font-bold leading-9 tracking-tight">
                 Game:
-                <span className="text-red-400"> {gameData.player1}</span> vs
-                <span className="text-yellow-300"> {gameData.player2}</span>
+                <span className="text-red-400 dark:text-purple-400"> {gameData.player1}</span> vs
+                <span className="text-yellow-400 dark:text-blue-500 drop-shadow-2xl"> {gameData.player2}</span>
             </p>
             <p className="text-center">{gameStatus}</p>
             {(!humanFinishedAt || replayInProgress) && (
                 <p className="text-center"> Move #{gameData.move_number} </p>
             )}
             {humanFinishedAt && (
-                <div className="mx-auto mt-2 w-1/2">
+                <div className="mx-auto mt-2 w-1/3">
                     <Connect4Button
                         label="Replay Game"
                         onClickHandler={handleReplayGame}
@@ -249,7 +265,15 @@ function GameBoard({
         <div
             className={`
                 mx-auto mt-4 w-2/5 rounded-xl
-                bg-gray-500 p-5 shadow-lg shadow-gray-500/50
+                p-5 shadow-2xl
+                bg-cyan-600
+                shadow-cyan-700
+                border-2
+                border-cyan-600
+                dark:bg-inherit
+                dark:shadow-blue-600
+                dark:border-2
+                dark:border-blue-600
             `}
         >
             <table className="mx-auto my-8">
@@ -298,6 +322,15 @@ function GameBoardCell({
     handleColumnLeave: () => void;
     handleCellClick: (i: number, j: number) => void;
 }) {
+    // highlight cell logic
+    let toHighlight = false;
+    if (gameData.board[rowIndex][colIndex] == 0 && !gameData.finished_at &&
+        gameData.next_player_to_move_username == playerName &&
+        highlightedColumn === colIndex
+    ) {
+        toHighlight = true;
+    }
+
     return (
         <td
             key={`cell-${rowIndex}-${colIndex}`}
@@ -305,21 +338,16 @@ function GameBoardCell({
             onMouseLeave={handleColumnLeave}
         >
             <button
-                className={`h-20 w-20 rounded-full border-2 transition duration-200
+                className={`h-20 w-20 rounded-full border-2 transition duration-200 border-cyan-100 dark:border-violet-300
                     ${cellValue === 1
-                        ? "bg-red-400"
+                        ? "bg-red-400 dark:bg-purple-500"
                         : cellValue === 2
-                            ? "bg-yellow-300"
+                            ? "bg-yellow-300 dark:bg-blue-600"
                             : cellValue == 3
-                                ? "bg-green-400"
+                                ? "bg-green-400 dark:bg-green-600"
                                 : ""
                     }
-                    ${!gameData.finished_at &&
-                        gameData.next_player_to_move_username == playerName &&
-                        highlightedColumn === colIndex
-                        ? "bg-gray-300"
-                        : ""
-                    }
+                    ${toHighlight ? "bg-cyan-500 dark:bg-slate-800" : "cursor-default"}
                 `}
                 onClick={() => handleCellClick(rowIndex, colIndex)}
             ></button>
