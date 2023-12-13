@@ -21,7 +21,8 @@ export default function ThemeButton() {
     return (
         <div
             className={`
-            absolute ml-2 mt-1 flex h-9 w-9 justify-center rounded-full md:p-0
+            absolute ml-2 mt-1 flex justify-center rounded-full p-0
+            h-9 w-9 lg:h-10 lg:w-10
             ${theme === "dark" ? "bg-slate-100" : "bg-slate-700"}
         `}
         >
@@ -40,7 +41,7 @@ function SunIcon() {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="h-6 w-6 text-slate-800"
+            className="text-slate-800 h-6 w-6 lg:w-7 lg:h-7"
         >
             <path
                 strokeLinecap="round"
@@ -59,7 +60,7 @@ function MoonIcon() {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="h-6 w-6 text-slate-200"
+            className="text-slate-200 h-6 w-6 lg:w-7 lg:h-7"
         >
             <path
                 strokeLinecap="round"
