@@ -76,15 +76,13 @@ export default function JoinGame({ params }: { params: { id: string } }) {
                 </p>
             </div>
 
-            <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-sm">
-                <div className="space-y-6">
-                    <PlayerNameInput
-                        label="Your name"
-                        value={playerName}
-                        setValue={setPlayerName}
-                    />
-                    <Connect4Button label="Join Game" onClickHandler={handleJoinGame} />
-                </div>
+            <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-sm space-y-6">
+                <PlayerNameInput
+                    label="Your name"
+                    value={playerName}
+                    setValue={setPlayerName}
+                />
+                <Connect4Button label="Join Game" onClickHandler={handleJoinGame} />
             </div>
         </div>
     );

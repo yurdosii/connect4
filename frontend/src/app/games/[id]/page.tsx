@@ -66,7 +66,11 @@ export default function PlayGame({ params }: { params: { id: string } }) {
     if (!data.player2) return <WaitingPlayerToJoin id={params.id} />;
 
     return (
-        <div className="flex flex-1 flex-col min-h-full px-6 py-12 lg:px-8 mx-96">
+        <div className={`
+            flex flex-1 flex-col min-h-full py-12 px-6 md:px-14 lg:px-5 xl:px-14 3xl:px-12 4xl:px-28
+            w-full sm:w-4/5 md:w-5/6 lg:w-4/6 xl:w-3/5 2xl:w-1/2 3xl:w-1/2 4xl:w-1/2
+            mx-auto
+        `}>
             <GameInfo gameData={data} setGameData={setData} playerName={playerName} />
             <GameBoard gameData={data} playerName={playerName} ws={ws} />
         </div>
@@ -88,12 +92,14 @@ function WaitingPlayerToJoin({ id }: { id: string }) {
     };
 
     return (
-        <div className="flex flex-1 flex-col justify-center min-h-full">
+        <div className="flex flex-1 flex-col justify-center min-h-full mx-4">
             <div
                 className={`
-                    mx-auto w-1/4 rounded-xl
-                    px-2 py-12 text-center
-                    shadow-lg
+                    w-full sm:w-5/6 md:w-3/4 lg:w-3/5 xl:w-1/2 2xl:w-1/3
+                    mx-auto
+                    px-2 py-12
+                    text-center
+                    shadow-lg rounded-xl
                     border-2
                     bg-cyan-600
                     text-slate-100
@@ -190,7 +196,7 @@ function GameInfo({
     return (
         <div
             className={`
-                w-2/5 p-5 mx-auto rounded-xl
+                p-5 rounded-xl
                 text-center
                 shadow-lg
                 border-2
@@ -264,7 +270,7 @@ function GameBoard({
     return (
         <div
             className={`
-                mx-auto mt-4 w-2/5 rounded-xl
+                mt-4 rounded-xl
                 p-5 shadow-2xl
                 bg-cyan-600
                 shadow-cyan-700
@@ -338,7 +344,9 @@ function GameBoardCell({
             onMouseLeave={handleColumnLeave}
         >
             <button
-                className={`h-20 w-20 rounded-full border-2 transition duration-200 border-cyan-100 dark:border-violet-300
+                className={`
+                    h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 lg:h-20 lg:w-20 xl:h-20 xl:w-20 2xl:h-20 2xl:w-20 3xl:h-24 3xl:w-24 4xl:h-28 4xl:w-28
+                    rounded-full border-2 transition duration-200 border-cyan-100 dark:border-violet-300
                     ${cellValue === 1
                         ? "bg-red-400 dark:bg-purple-500"
                         : cellValue === 2
