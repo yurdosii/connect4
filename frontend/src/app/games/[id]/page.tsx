@@ -256,11 +256,11 @@ function GameBoard({
     playerName: string;
     ws: WebSocket | null;
 }) {
-    if (!gameData) return;
-
     const [highlightedColumn, setHighlightedColumn] = useState<number | null>(
         null,
     );
+
+    if (!gameData) return;
 
     const handleColumnHover = (colIndex: number) => {
         setHighlightedColumn(colIndex);
@@ -301,6 +301,7 @@ function GameBoard({
                         <tr key={`row-${rowIndex}`}>
                             {row.map((cell: number, colIndex: number) => (
                                 <GameBoardCell
+                                    key={`cell-${rowIndex}-${colIndex}`}
                                     gameData={gameData}
                                     playerName={playerName}
                                     rowIndex={rowIndex}
@@ -321,6 +322,7 @@ function GameBoard({
 }
 
 function GameBoardCell({
+    key,
     gameData,
     playerName,
     rowIndex,
@@ -331,6 +333,7 @@ function GameBoardCell({
     handleColumnLeave,
     handleCellClick,
 }: {
+    key: string;
     gameData: GameData;
     playerName: string;
     rowIndex: number;
@@ -352,7 +355,7 @@ function GameBoardCell({
 
     return (
         <td
-            key={`cell-${rowIndex}-${colIndex}`}
+            key={key}
             onMouseEnter={() => handleColumnHover(colIndex)}
             onMouseLeave={handleColumnLeave}
         >

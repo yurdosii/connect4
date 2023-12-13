@@ -43,6 +43,11 @@ Open [http://localhost:8000](http://localhost:8000)
 cp .env.example .env
 ```
 
+### Run linters
+```
+npm run lint
+```
+
 ### To run
 ```
 npm run dev
