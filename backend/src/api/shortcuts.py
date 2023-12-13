@@ -20,6 +20,6 @@ def make_move(game: Game, col: int) -> None:
         mark_winner(game.board, winner)
         game.winner = PlayerEnum(winner)
         game.finished_at = datetime.datetime.now()
-    elif game.move_number == N * M:
+    elif game.move_number == N * M + 1:
         game.winner = None
         game.finished_at = datetime.datetime.now()
