@@ -72,7 +72,7 @@ export default function JoinGame({ params }: { params: { id: string } }) {
                     challenged your skills in Connect4.
                 </h6>
                 <p className="text-md mt-2">
-                    Please enter your name and click "Join Game" to start the battle.
+                    Please enter your name and click &quot;Join Game&quot; to start the battle.
                 </p>
             </div>
 

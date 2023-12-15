@@ -16,6 +16,7 @@ export interface GameData {
     id: string;
     player1: string;
     player2: string | null;
+    winner: number | null;
     move_number: number;
     board: number[][];
     moves: MoveData[];
@@ -32,7 +33,7 @@ export default function PlayGame({ params }: { params: { id: string } }) {
 
     useEffect(() => {
         const ws = new WebSocket(
-            `${BACKEND_WS_BASE_URL}/games/ws/games/${params.id}/`,
+            `${BACKEND_WS_BASE_URL}/games/ws/${params.id}/`,
         );
         ws.addEventListener("open", () => {
             // get data only when
@@ -186,7 +187,16 @@ function GameInfo({
     let humanFinishedAt = null;
     if (gameData.finished_at) {
         humanFinishedAt = new Date(gameData.finished_at).toLocaleString();
-        gameStatus = `Game finished at ${humanFinishedAt}`;
+        if (!gameData.winner) {
+            gameStatus += "It's a draw";
+        } else if (
+            (gameData.winner == 1 && gameData.player1 == playerName) ||
+            (gameData.winner == 2 && gameData.player2 == playerName)
+        ) {
+            gameStatus += "You won!";
+        } else {
+            gameStatus += "You lost!"
+        }
     } else if (gameData.next_player_to_move_username == playerName) {
         gameStatus = "It's your turn";
     } else {
@@ -219,6 +229,9 @@ function GameInfo({
                 <span className="text-yellow-400 dark:text-blue-500 drop-shadow-2xl"> {gameData.player2}</span>
             </p>
             <p className="text-center">{gameStatus}</p>
+            {humanFinishedAt && (
+                <p className="text-center"> Game finished at {humanFinishedAt}</p>
+            )}
             {(!humanFinishedAt || replayInProgress) && (
                 <p className="text-center"> Move #{gameData.move_number} </p>
             )}
@@ -243,11 +256,11 @@ function GameBoard({
     playerName: string;
     ws: WebSocket | null;
 }) {
-    if (!gameData) return;
-
     const [highlightedColumn, setHighlightedColumn] = useState<number | null>(
         null,
     );
+
+    if (!gameData) return;
 
     const handleColumnHover = (colIndex: number) => {
         setHighlightedColumn(colIndex);
@@ -288,6 +301,7 @@ function GameBoard({
                         <tr key={`row-${rowIndex}`}>
                             {row.map((cell: number, colIndex: number) => (
                                 <GameBoardCell
+                                    key={`cell-${rowIndex}-${colIndex}`}
                                     gameData={gameData}
                                     playerName={playerName}
                                     rowIndex={rowIndex}
@@ -308,6 +322,7 @@ function GameBoard({
 }
 
 function GameBoardCell({
+    key,
     gameData,
     playerName,
     rowIndex,
@@ -318,6 +333,7 @@ function GameBoardCell({
     handleColumnLeave,
     handleCellClick,
 }: {
+    key: string;
     gameData: GameData;
     playerName: string;
     rowIndex: number;
@@ -339,7 +355,7 @@ function GameBoardCell({
 
     return (
         <td
-            key={`cell-${rowIndex}-${colIndex}`}
+            key={key}
             onMouseEnter={() => handleColumnHover(colIndex)}
             onMouseLeave={handleColumnLeave}
         >

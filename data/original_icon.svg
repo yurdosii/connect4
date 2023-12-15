@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com">
+  <defs>
+    <style bx:fonts="Inter">@import url(https://fonts.googleapis.com/css2?family=Inter%3Aital%2Cwght%400%2C100%3B0%2C200%3B0%2C300%3B0%2C400%3B0%2C500%3B0%2C600%3B0%2C700%3B0%2C800%3B0%2C900&amp;display=swap);</style>
+  </defs>
+  <ellipse style="fill: rgb(8, 145, 178); stroke: rgba(0, 0, 0, 0);" cx="250" cy="250" rx="241.408" ry="240.503"/>
+  <g transform="matrix(1.322648, 0, 0, 1.260397, -93.368675, -45.171177)" style="">
+    <text style="fill: rgb(255, 255, 255); font-family: Inter; font-size: 140.8px; font-weight: 800; letter-spacing: 5px; line-height: 225.305px; white-space: pre;" x="168.485" y="285.491" transform="matrix(1.138382, 0, 0, 1.174558, -32.913857, -40.948875)">C4</text>
+  </g>
+</svg>
