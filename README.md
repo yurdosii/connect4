@@ -14,6 +14,14 @@ Connect 4
 - backend: Python 3.12, FastAPI, MongoDB, ruff
 - frontend: Next.js, TypeScript, Tailwind CSS
 
+# Diagrams
+![diagram](data/diagram.png)
+![endpoints](data/endpoints.png)
+
+# Demo
+[demo](data/connect4_demo.mov)
+
+
 # Development
 ## Backend
 ### Prerequisites

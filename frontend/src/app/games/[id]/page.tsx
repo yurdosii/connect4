@@ -33,7 +33,7 @@ export default function PlayGame({ params }: { params: { id: string } }) {
 
     useEffect(() => {
         const ws = new WebSocket(
-            `${BACKEND_WS_BASE_URL}/games/ws/games/${params.id}/`,
+            `${BACKEND_WS_BASE_URL}/games/ws/${params.id}/`,
         );
         ws.addEventListener("open", () => {
             // get data only when

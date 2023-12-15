@@ -88,7 +88,7 @@ async def join_game(game_id: PyObjectId, player_data: StartGame) -> Game:
     return updated_game
 
 
-@router.websocket("/ws/games/{game_id}/")
+@router.websocket("/ws/{game_id}/")
 async def websocket_game_endpoint(
     websocket: WebSocket, game_id: PyObjectId
 ) -> None:
