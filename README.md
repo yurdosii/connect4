@@ -19,7 +19,7 @@ Connect 4
 ![endpoints](data/endpoints.png)
 
 # Demo
-[demo](data/connect4_demo.mov)
+[demo](data/connect4_demo.mp4)
 
 
 # Development
