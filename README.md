@@ -27,12 +27,18 @@ https://github.com/yurdosii/connect4/assets/41447717/bfcf04df-f5f5-4453-8a4d-507
 ## Backend
 ### Prerequisites
 ```
+pre-commit install
+pre-commit install --hook-type commit-msg
+```
+
+Local:
+```
 cp .env.example .env
 ```
 
+Docker:
 ```
-pre-commit install
-pre-commit install --hook-type commit-msg
+cp .env.example .env.docker
 ```
 
 ### Run linters
@@ -41,10 +47,18 @@ make lint
 ```
 
 ### To run
+Local:
 ```
 uvicorn src.main:app --reload
 ```
 Open [http://localhost:8000](http://localhost:8000)
+
+Docker:
+```
+docker-compose build
+docker-compose up
+```
+Open [http://localhost:8001](http://localhost:8001)
 
 ## Frontend
 ### Prerequisites
