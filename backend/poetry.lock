@@ -247,17 +247,20 @@ files = [
 
 [[package]]
 name = "motor"
-version = "3.3.1"
+version = "3.3.2"
 description = "Non-blocking MongoDB driver for Tornado or asyncio"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "motor-3.3.1-py3-none-any.whl", hash = "sha256:a0dee83ad0d47b353932ac37467ba397b1e649ce7e3eea7f5a90554883d7cdbe"},
-    {file = "motor-3.3.1.tar.gz", hash = "sha256:c5eb400e27d722a3db03a9826656b6d13acf9b6c70c2fb4604f474eac9da5be4"},
+    {file = "motor-3.3.2-py3-none-any.whl", hash = "sha256:6fe7e6f0c4f430b9e030b9d22549b732f7c2226af3ab71ecc309e4a1b7d19953"},
+    {file = "motor-3.3.2.tar.gz", hash = "sha256:d2fc38de15f1c8058f389c1a44a4d4105c0405c48c061cd492a654496f7bc26a"},
 ]
 
 [package.dependencies]
-pymongo = ">=4.5,<5"
+pymongo = [
+    {version = ">=4.5,<5"},
+    {version = ">=4.5,<5", extras = ["srv"], optional = true, markers = "extra == \"srv\""},
+]
 
 [package.extras]
 aws = ["pymongo[aws] (>=4.5,<5)"]
@@ -266,7 +269,7 @@ gssapi = ["pymongo[gssapi] (>=4.5,<5)"]
 ocsp = ["pymongo[ocsp] (>=4.5,<5)"]
 snappy = ["pymongo[snappy] (>=4.5,<5)"]
 srv = ["pymongo[srv] (>=4.5,<5)"]
-test = ["aiohttp", "mockupdb", "motor[encryption]", "pytest (>=7)", "tornado (>=5)"]
+test = ["aiohttp (<3.8.6)", "mockupdb", "motor[encryption]", "pytest (>=7)", "tornado (>=5)"]
 zstd = ["pymongo[zstd] (>=4.5,<5)"]
 
 [[package]]
@@ -1108,4 +1111,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "190831e83f2e3745cfa921958a84032bb5d5f41427fdf2ff71cc825419fc05ed"
+content-hash = "be17c66b35ee264fa00405b83fc5436a71447d96ce00b0db53aa3416266885fd"
