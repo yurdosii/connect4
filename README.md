@@ -15,6 +15,7 @@ Connect 4
 # Stack
 - backend: Python 3.12, FastAPI, MongoDB, ruff
 - frontend: Next.js, TypeScript, Tailwind CSS
+- cloud: Google Cloud Platform (Cloud Run), MongoDB Atlas
 
 # Diagrams
 ![diagram](data/diagram.png)
@@ -27,12 +28,18 @@ https://github.com/yurdosii/connect4/assets/41447717/bfcf04df-f5f5-4453-8a4d-507
 ## Backend
 ### Prerequisites
 ```
+pre-commit install
+pre-commit install --hook-type commit-msg
+```
+
+Local:
+```
 cp .env.example .env
 ```
 
+Docker:
 ```
-pre-commit install
-pre-commit install --hook-type commit-msg
+cp .env.example .env.docker
 ```
 
 ### Run linters
@@ -41,10 +48,25 @@ make lint
 ```
 
 ### To run
+Local:
 ```
 uvicorn src.main:app --reload
 ```
 Open [http://localhost:8000](http://localhost:8000)
+
+Docker:
+```
+docker-compose build
+docker-compose up
+```
+Open [http://localhost:8001](http://localhost:8001)
+
+### To deploy
+```
+docker buildx build --platform linux/amd64 -t yurdo/connect4-backend:1.0.0 .
+docker login
+docker push yurdo/connect4-backend:1.0.0
+```
 
 ## Frontend
 ### Prerequisites
@@ -58,7 +80,23 @@ npm run lint
 ```
 
 ### To run
+Local:
 ```
 npm run dev
 ```
 Open [http://localhost:3000](http://localhost:3000)
+
+Docker:
+```
+docker build -t yurdo/connect4-frontend:1.0.0 .
+docker run -p 3001:3000 yurdo/connect4-frontend:1.0.0
+```
+Open [http://localhost:3001](http://localhost:3001)
+
+
+### To deploy
+```
+docker buildx build --platform linux/amd64 -t yurdo/connect4-frontend:1.0.0 .
+docker login
+docker push yurdo/connect4-frontend:1.0.0
+```

@@ -9,8 +9,7 @@ MONGO_DB_MIN_POOL_SIZE: int = 0
 def get_mongodb() -> AsyncIOMotorDatabase:
     """Get MongoDB DB instance"""
     client = AsyncIOMotorClient(
-        host=settings.MONGO_DB_HOST,
-        port=settings.MONGO_DB_PORT,
+        settings.MONGO_DB_URL,
         maxPoolSize=MONGO_DB_MAX_POOL_SIZE,
         minPoolSize=MONGO_DB_MIN_POOL_SIZE,
     )

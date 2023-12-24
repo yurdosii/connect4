@@ -8,9 +8,9 @@ class AppSettings(BaseSettings):
         env_prefix = "app_"
 
     # MongoDB
-    MONGO_DB_HOST: str
-    MONGO_DB_PORT: int
+    MONGO_DB_URL: str
     MONGO_DB_DB: str
+    ALLOWED_ORIGINS: list[str]
 
 
-settings = AppSettings()
+settings = AppSettings()  # type: ignore[call-arg]
