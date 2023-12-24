@@ -60,6 +60,13 @@ docker-compose up
 ```
 Open [http://localhost:8001](http://localhost:8001)
 
+### To deploy
+```
+docker buildx build --platform linux/amd64 -t yurdo/connect4-backend:1.0.0 .
+docker login
+docker push yurdo/connect4-backend:1.0.0
+```
+
 ## Frontend
 ### Prerequisites
 ```
@@ -72,7 +79,23 @@ npm run lint
 ```
 
 ### To run
+Local:
 ```
 npm run dev
 ```
 Open [http://localhost:3000](http://localhost:3000)
+
+Docker:
+```
+docker build -t yurdo/connect4-frontend:1.0.0 .
+docker run -p 3001:3000 yurdo/connect4-frontend:1.0.0
+```
+Open [http://localhost:3001](http://localhost:3001)
+
+
+### To deploy
+```
+docker buildx build --platform linux/amd64 -t yurdo/connect4-frontend:1.0.0 .
+docker login
+docker push yurdo/connect4-frontend:1.0.0
+```
