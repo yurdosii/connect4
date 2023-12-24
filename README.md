@@ -15,6 +15,7 @@ Connect 4
 # Stack
 - backend: Python 3.12, FastAPI, MongoDB, ruff
 - frontend: Next.js, TypeScript, Tailwind CSS
+- cloud: Google Cloud Platform (Cloud Run), MongoDB Atlas
 
 # Diagrams
 ![diagram](data/diagram.png)
