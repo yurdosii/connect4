@@ -69,9 +69,9 @@ export default function PlayGame({ params }: { params: { id: string } }) {
     return (
         <div className={`
             flex flex-1 flex-col min-h-full
-            py-6
-            px-8 md:px-10 lg:px-16 xl:px-18 3xl:px-12 4xl:px-28
-            w-full sm:w-9/12 md:w-9/12 lg:w-4/6 xl:w-6/12 2xl:w-1/2 3xl:w-1/2 4xl:w-1/2
+            py-4
+            px-8 md:px-10 lg:px-16 xl:px-18 3xl:px-12 4xl:px-32
+            w-full sm:w-9/12 md:w-9/12 lg:w-7/12 xl:w-6/12 2xl:w-5/12 3xl:w-5/12 4xl:w-5/12
             mx-auto
         `}>
             <GameInfo gameData={data} setGameData={setData} playerName={playerName} />
@@ -98,7 +98,7 @@ function WaitingPlayerToJoin({ id }: { id: string }) {
         <div className="flex flex-1 flex-col justify-center min-h-full mx-4">
             <div
                 className={`
-                    w-full sm:w-5/6 md:w-3/4 lg:w-3/5 xl:w-6/12 2xl:w-1/3
+                    w-full sm:w-5/6 md:w-3/4 lg:w-3/5 xl:w-6/12 3xl:w-1/3
                     mx-auto
                     px-2 py-12
                     text-center
@@ -221,13 +221,13 @@ function GameInfo({
                 dark:text-violet-100
                 dark:border-violet-500
                 dark:shadow-violet-500
-                text-md tracking-tight
+                text-md 3xl:text-lg tracking-tight
             `}
         >
-            <p className="text-xl font-bold mb-1">
+            <p className="text-xl 3xl:text-2xl font-bold mb-1">
                 Connect4 BATTLE
             </p>
-            <p className="text-lg font-bold ">
+            <p className="text-lg 3xl:text-xl font-bold ">
                 Game:
                 <span className="text-red-400 dark:text-purple-400"> {gameData.player1}</span> vs
                 <span className="text-yellow-400 dark:text-blue-500 drop-shadow-2xl"> {gameData.player2}</span>
@@ -295,7 +295,7 @@ function GameBoard({
                 dark:border-blue-600
             `}
         >
-            <table className="mx-auto my-0 sm:my-2 md:my-2 lg:my-1">
+            <table className="mx-auto my-0 sm:my-2 3xl:my-2">
                 <tbody>
                     {gameData.board.map((row: number[], rowIndex: number) => (
                         <tr key={`row-${rowIndex}`}>
@@ -361,7 +361,7 @@ function GameBoardCell({
         >
             <button
                 className={`
-                    h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14 lg:h-16 lg:w-16 xl:h-16 xl:w-16 2xl:h-20 2xl:w-20 3xl:h-24 3xl:w-24 4xl:h-28 4xl:w-28
+                    h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14 lg:h-14 lg:w-14 xl:h-16 xl:w-16 3xl:h-20 3xl:w-20
                     rounded-full border-2 transition duration-200 border-cyan-100 dark:border-violet-300
                     ${cellValue === 1
                         ? "bg-red-400 dark:bg-purple-500"
