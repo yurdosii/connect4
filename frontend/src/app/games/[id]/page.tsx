@@ -98,7 +98,7 @@ function WaitingPlayerToJoin({ id }: { id: string }) {
         <div className="flex flex-1 flex-col justify-center min-h-full mx-4">
             <div
                 className={`
-                    w-full sm:w-5/6 md:w-3/4 lg:w-3/5 xl:w-6/12 2xl:w-1/3
+                    w-full sm:w-5/6 md:w-3/4 lg:w-3/5 xl:w-6/12 3xl:w-1/3
                     mx-auto
                     px-2 py-12
                     text-center
@@ -221,13 +221,13 @@ function GameInfo({
                 dark:text-violet-100
                 dark:border-violet-500
                 dark:shadow-violet-500
-                text-md tracking-tight
+                text-md lg:text-lg tracking-tight
             `}
         >
-            <p className="text-xl font-bold mb-1">
+            <p className="text-xl lg:text-2xl font-bold mb-1">
                 Connect4 BATTLE
             </p>
-            <p className="text-lg font-bold ">
+            <p className="text-lg lg:text-xl font-bold ">
                 Game:
                 <span className="text-red-400 dark:text-purple-400"> {gameData.player1}</span> vs
                 <span className="text-yellow-400 dark:text-blue-500 drop-shadow-2xl"> {gameData.player2}</span>
@@ -295,7 +295,7 @@ function GameBoard({
                 dark:border-blue-600
             `}
         >
-            <table className="mx-auto my-0 sm:my-2 md:my-2 lg:my-1">
+            <table className="mx-auto my-0 sm:my-2 3xl:my-6">
                 <tbody>
                     {gameData.board.map((row: number[], rowIndex: number) => (
                         <tr key={`row-${rowIndex}`}>

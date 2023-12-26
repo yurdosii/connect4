@@ -7,14 +7,15 @@
 [![Next.js](https://ziadoua.github.io/m3-Markdown-Badges/badges/NextJS/nextjs1.svg)](https://nextjs.org/)
 [![TypeScript](https://ziadoua.github.io/m3-Markdown-Badges/badges/TypeScript/typescript1.svg)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://ziadoua.github.io/m3-Markdown-Badges/badges/TailwindCSS/tailwindcss1.svg)](https://tailwindcss.com/)
+[![Docker](https://ziadoua.github.io/m3-Markdown-Badges/badges/Docker/docker1.svg)](https://www.docker.com/)
 [![License: MIT](https://ziadoua.github.io/m3-Markdown-Badges/badges/LicenceMIT/licencemit1.svg)](https://opensource.org/licenses/MIT)
 
 # Game
 Connect 4
 
 # Stack
-- backend: Python 3.12, FastAPI, MongoDB, ruff
-- frontend: Next.js, TypeScript, Tailwind CSS
+- backend: Python 3.12, FastAPI, MongoDB, Ruff, Docker
+- frontend: Next.js, TypeScript, Tailwind CSS, Docker
 - cloud: Google Cloud Platform (Cloud Run), MongoDB Atlas
 
 # Diagrams
