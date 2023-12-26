@@ -16,7 +16,7 @@ from ..models import CreatedUpdatedMixin, MongoDBModel
 
 PLAYER_FIELD = Field(
     min_length=3,
-    max_length=50,
+    max_length=20,
     pattern=r"^[a-zA-Z0-9_ ]+$",
     examples=["name1"],
 )

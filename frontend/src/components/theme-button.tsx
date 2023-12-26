@@ -21,7 +21,7 @@ export default function ThemeButton() {
     return (
         <div
             className={`
-            absolute ml-2 mt-1 flex justify-center rounded-full p-0
+            absolute ml-1 mt-1 flex justify-center rounded-full p-0
             h-9 w-9 lg:h-10 lg:w-10
             ${theme === "dark" ? "bg-slate-100" : "bg-slate-700"}
         `}
