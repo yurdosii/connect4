@@ -13,17 +13,22 @@
 # Game
 Connect 4
 
-# Stack
+# Demo
+https://github.com/yurdosii/connect4/assets/41447717/bfcf04df-f5f5-4453-8a4d-507f69f5eff2
+
+# Overview
+## Stack
 - backend: Python 3.12, FastAPI, MongoDB, Ruff, Docker
 - frontend: Next.js, TypeScript, Tailwind CSS, Docker
 - cloud: Google Cloud Platform (Cloud Run), MongoDB Atlas
 
-# Diagrams
+## Deployed
+- backend: https://connect4-backend-rq7ntv5phq-uc.a.run.app/docs
+- frontend: https://connect4-rq7ntv5phq-uc.a.run.app/
+
+## Diagrams
 ![diagram](data/diagram.png)
 ![endpoints](data/endpoints.png)
-
-# Demo
-https://github.com/yurdosii/connect4/assets/41447717/bfcf04df-f5f5-4453-8a4d-507f69f5eff2
 
 # Development
 ## Backend
